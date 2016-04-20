@@ -1,0 +1,159 @@
+﻿<Controls:MetroWindow x:Class="Kian.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:local="clr-namespace:Kian"
+                      xmlns:malapi="clr-namespace:Kian.MyAnimeList.Objects.API.Anime"
+                      mc:Ignorable="d"
+                      EnableDWMDropShadow="True"
+                      WindowStartupLocation="CenterScreen"
+                      Name="window"
+                      Title="Kian 2"
+                      Height="576"
+                      Width="1024"
+                      MinHeight="576"
+                      MinWidth="1024" Loaded="window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Icons.xaml" />
+                <ResourceDictionary Source="Resources/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:HideIfNullVisibleConverter x:Key="HideIfNullVisibleConverter" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <TabControl x:Name="mainTabControl" Margin="10,10,10,0">
+            <TabItem Name="mainList" Header="List">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid HorizontalAlignment="Stretch">
+                        <TextBlock Margin="5,4,0,0" Background="Transparent" Foreground="LightGray" FontSize="24" Text="Search..."
+                                   Visibility="{Binding ElementName=searchStringBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <TextBox x:Name="searchStringBox" VerticalContentAlignment="Center" TextWrapping="Wrap" Background="Transparent" FontSize="24">
+                            <TextBox.CommandBindings>
+                                <CommandBinding Command="Search" Executed="SearchCommandBinding_Executed" />
+                            </TextBox.CommandBindings>
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="Search" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                    </Grid>
+
+                    <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
+                        <Grid.OpacityMask>
+                            <LinearGradientBrush MappingMode="Absolute" EndPoint="0,20" StartPoint="0,5">
+                                <LinearGradientBrush.RelativeTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                        <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                        <RotateTransform Angle="180" CenterY="0.5" CenterX="0.5"/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </LinearGradientBrush.RelativeTransform>
+                                <GradientStop Color="Transparent" Offset="0"/>
+                                <GradientStop Color="Black" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Grid.OpacityMask>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <StackPanel >
+                                <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems, ElementName=window}" Background="White">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderThickness="0,0,0,1" BorderBrush="White">
+                                                <Expander Loaded="LoadMalData">
+                                                    <Expander.Header>
+                                                        <Grid>
+                                                            <Label Content="{Binding Title}" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" />
+                                                            <ItemsControl ItemsSource="{Binding Tags}" HorizontalAlignment="Right">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <UniformGrid Rows="1" />
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Border Style="{StaticResource TagBorder}" Background="White">
+                                                                            <Label Content="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </Grid>
+                                                    </Expander.Header>
+                                                    <StackPanel>
+                                                        <TabControl>
+                                                            <TabItem Header="Info" Visibility="{Binding MalData, Converter={StaticResource HideIfNullVisibleConverter}, FallbackValue=Collapsed}">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Border Grid.Column="0" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}">
+                                                                        <Image MaxHeight="225" MaxWidth="200"  Source="{Binding MalData.image, FallbackValue='https://placeholdit.imgix.net/~text?txtsize=33&amp;txt=Loading...&amp;w=200&amp;h=300'}" HorizontalAlignment="Left" />
+                                                                    </Border>
+
+                                                                    <StackPanel Grid.Column="1">
+                                                                        <Label Grid.Column="1"
+                                                                               FontSize="16" FontWeight="Bold" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding MalData.title, FallbackValue='Loading...'}" />
+                                                                        <TextBlock Grid.Column="1"
+                                                                                   Margin="5" TextWrapping="Wrap" Text="{Binding MalData.synopsis, FallbackValue='' }" />
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </TabItem>
+                                                            <TabItem Header="Download" Visibility="{Binding DownloadSources, Converter={StaticResource HideIfNullVisibleConverter}, FallbackValue=Collapsed}">
+                                                                <Grid>
+                                                                    <ItemsControl ItemsSource="{Binding DownloadSources}">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <Border BorderThickness="0,0,0,1" BorderBrush="White">
+                                                                                    <Expander Header="{Binding Name}">
+                                                                                        <ListView ItemsSource="{Binding Downloads}" SelectionMode="Extended" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListBox}">
+                                                                                            <ListView.View>
+                                                                                                <GridView>
+                                                                                                    <GridViewColumn Header="Episode Name" Width="Auto" DisplayMemberBinding="{Binding EpisodeName}" />
+                                                                                                    <GridViewColumn Header="Size" Width="Auto" DisplayMemberBinding="{Binding FileSize}" />
+                                                                                                    <GridViewColumn Header="Resolution" Width="Auto" DisplayMemberBinding="{Binding Resolution}" />
+                                                                                                </GridView>
+                                                                                            </ListView.View>
+                                                                                            <ListView.ItemTemplate>
+                                                                                                <DataTemplate>
+                                                                                                    <UniformGrid Rows="1" Background="Transparent">
+                                                                                                        <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
+                                                                                                    </UniformGrid>
+                                                                                                </DataTemplate>
+                                                                                            </ListView.ItemTemplate>
+                                                                                        </ListView>
+                                                                                    </Expander>
+                                                                                </Border>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </Grid>
+                                                            </TabItem>
+                                                        </TabControl>
+                                                    </StackPanel>
+                                                </Expander>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Grid Height="15"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Controls:MetroWindow>
