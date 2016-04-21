@@ -1,11 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace Kian.Core
 {
     public interface IPlugin
     {
         string Name { get; }
+        ContentControl PluginContent { get; set; }
 
-        Objects.Anime.DownloadSource GetAnime(string searchString);
+        void OnStart();
+        void OnSearch(string searchTerm);
     }
 }
