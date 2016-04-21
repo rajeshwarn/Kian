@@ -1,10 +1,10 @@
-﻿using Kian.MyAnimeList.Objects.API.Anime;
+﻿using Kian.Core.MyAnimeList.Objects.API.Anime;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace Kian.MyAnimeList.API.Anime
+namespace Kian.Core.MyAnimeList.API.Anime
 {
     public class Search
     {

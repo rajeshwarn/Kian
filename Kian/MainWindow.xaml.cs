@@ -1,13 +1,12 @@
-﻿using Kian;
-using Kian.Core;
-using Kian.MyAnimeList.Objects.API.Anime;
-using Kian.Objects.Anime;
+﻿using Kian.Core;
+using Kian.Core.MyAnimeList.API.Anime;
+using Kian.Core.MyAnimeList.Objects.API.Anime;
+using Kian.Core.Objects.Anime;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,25 +39,56 @@ namespace Kian
                         DownloadSources = new List<DownloadSource> {
                             new DownloadSource
                             {
-                                Name = "AnimeRam.co",
-                                Downloads = new List<Objects.Anime.Download> {
-                                    new Download {
-                                        FileName = "Noragami-1-1080p.mp4",
-                                        DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
-                                        Resolution = "Not Yet Implemented",
-                                        EpisodeName = "Noragami - Episode 1"
+                                Name = "KissAnime.fake",
+                                DownloadGroups = new List<DownloadGroup>
+                                {
+                                    new DownloadGroup()
+                                    {
+                                        GroupName = "1080p",
+                                        Downloads = new List<Download> {
+                                            new Download {
+                                                FileName = "Noragami-1-1080p.mp4",
+                                                DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
+                                                Resolution = "Not Yet Implemented",
+                                                EpisodeName = "Noragami - Episode 1"
+                                            },
+                                            new Download {
+                                                FileName = "Noragami-1-1080p.mp4",
+                                                DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
+                                                Resolution = "Not Yet Implemented",
+                                                EpisodeName = "Noragami - Episode 2"
+                                            },
+                                            new Download {
+                                                FileName = "Noragami-1-1080p.mp4",
+                                                DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
+                                                Resolution = "Not Yet Implemented",
+                                                EpisodeName = "Noragami - Episode 3"
+                                            }
+                                        }
                                     },
-                                    new Download {
-                                        FileName = "Noragami-1-1080p.mp4",
-                                        DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
-                                        Resolution = "Not Yet Implemented",
-                                        EpisodeName = "Noragami - Episode 2"
-                                    },
-                                    new Download {
-                                        FileName = "Noragami-1-1080p.mp4",
-                                        DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
-                                        Resolution = "Not Yet Implemented",
-                                        EpisodeName = "Noragami - Episode 3"
+                                    new DownloadGroup()
+                                    {
+                                        GroupName = "720p",
+                                        Downloads = new List<Download> {
+                                            new Download {
+                                                FileName = "Noragami-1-1080p.mp4",
+                                                DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
+                                                Resolution = "Not Yet Implemented",
+                                                EpisodeName = "Noragami - Episode 1"
+                                            },
+                                            new Download {
+                                                FileName = "Noragami-1-1080p.mp4",
+                                                DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
+                                                Resolution = "Not Yet Implemented",
+                                                EpisodeName = "Noragami - Episode 2"
+                                            },
+                                            new Download {
+                                                FileName = "Noragami-1-1080p.mp4",
+                                                DownloadLink = "http://cdn.oose.io/W4kU3x570Dj024S8llA5N677DgXHFr4b2x5E6wv4XX8grOaLltYJIa70Sui53xUj/video.mp4",
+                                                Resolution = "Not Yet Implemented",
+                                                EpisodeName = "Noragami - Episode 3"
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -94,7 +124,7 @@ namespace Kian
                       {
                           if (entry.MalData == null)
                           {
-                              anime searchResults = MyAnimeList.API.Anime.Search.GetResults(entry.Title, _malLogin);
+                              anime searchResults = Search.GetResults(entry.Title, _malLogin);
 
                               if (searchResults != null && searchResults.Items.Length > 0)
                               {
@@ -124,7 +154,7 @@ namespace Kian
             BackgroundWorker malBackgroundWorker = new BackgroundWorker();
             malBackgroundWorker.DoWork += delegate
             {
-                anime searchResults = MyAnimeList.API.Anime.Search.GetResults(searchString, _malLogin);
+                anime searchResults = Search.GetResults(searchString, _malLogin);
                 if (searchResults != null && searchResults.Items != null)
                 {
                     foreach (animeEntry entry in searchResults.Items)

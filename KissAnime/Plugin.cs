@@ -1,7 +1,7 @@
 ﻿using Cloudflare_Evader;
 using CsQuery;
 using Kian.Core;
-using Kian.Objects.Anime;
+using Kian.Core.Objects.Anime;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace KissAnime
@@ -48,42 +49,52 @@ namespace KissAnime
             client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
 
             string search = client.UploadString(searchUrl, "keyword=" + searchString);
-
+            
             if (!string.IsNullOrEmpty(search))
             {
                 CQ searchCq = new CQ(search);
 
-                foreach (IDomObject searchDomObject in searchCq[".listing a"].ToList())
+                IDomObject searchDomObject = searchCq[".listing a"][0];
+                string animeName = searchDomObject.InnerText;
+
+                client.Headers = defaultHeaders;
+                string episodes = client.DownloadString(new Uri(baseUri, searchDomObject.Attributes["Href"]).AbsoluteUri);
+
+                if (!string.IsNullOrEmpty(episodes))
                 {
-                    string animeName = searchDomObject.InnerText;
+                    CQ episodesQc = new CQ(episodes);
 
-                    client.Headers = defaultHeaders;
-                    string episodes = client.DownloadString("https://kissanime.to/Anime/Noragami-Dub"); //new Uri(baseUri, searchDomObject.Attributes["Href"]).AbsoluteUri);
+                    Dictionary<string, DownloadGroup> dlg = new Dictionary<string, DownloadGroup>();
 
-                    if (!string.IsNullOrEmpty(episodes))
+                    foreach (IDomObject episodeDomObject in episodesQc[".listing a"].ToList())
                     {
-                        CQ episodesQc = new CQ(episodes);
+                        string episodeName = episodeDomObject.InnerText.Substring(41);
 
-                        foreach (IDomObject episodeDomObject in episodesQc[".listing a"].ToList())
+                        foreach (Download dl in GetDownloads(client, new Uri(baseUri, episodeDomObject.Attributes["Href"]).AbsoluteUri, episodeName))
                         {
-                            string episodeName = episodeDomObject.InnerText;
-                            downloadSource.Downloads.Add(new Download
-                            {
-                                DownloadLink = GetVideo(client, new Uri(baseUri, episodeDomObject.Attributes["Href"]).AbsoluteUri),
-                                EpisodeName = animeName,
-                                FileName = "filename.extension",
-                                Resolution = "???p"
-                            });
+                            if (!dlg.ContainsKey(dl.Resolution))
+                                dlg.Add(dl.Resolution, new DownloadGroup() { GroupName = dl.Resolution });
+
+                            dlg[dl.Resolution].Downloads.Add(dl);
                         }
                     }
+
+                    foreach (KeyValuePair<string, DownloadGroup> kvp in dlg)
+                        downloadSource.DownloadGroups.Add(kvp.Value);
+                    
                 }
-                return downloadSource;
+                if (downloadSource.DownloadGroups.Count > 0)
+                    return downloadSource;
+                else
+                    return null;
             }
             return null;
         }
 
-        private string GetVideo(WebClient client, string url)
+        private List<Download> GetDownloads(WebClient client, string url, string name)
         {
+            List<Download> downloads = new List<Download>();
+
             client.Headers = defaultHeaders;
             string episode = client.DownloadString(url);
 
@@ -91,12 +102,17 @@ namespace KissAnime
             {
                 CQ episodeQc = new CQ(episode);
 
-                var target = episodeQc["video"][0].Attributes.ToList();
-                var t1 = episodeQc["a[href *= 'googlevideo']"].ToList();
-
-                return null;
+                foreach (IDomObject quality in episodeQc["#selectQuality > option"].ToList())
+                {
+                    downloads.Add(new Download
+                    {
+                        EpisodeName = name,
+                        DownloadLink = Encoding.UTF8.GetString(Convert.FromBase64String(quality.Attributes["value"])),
+                        Resolution = quality.InnerText
+                    });
+                }
             }
-            return "";
+            return downloads;
         }
 
         private WebHeaderCollection CloneHeaders(WebHeaderCollection headerCollection)

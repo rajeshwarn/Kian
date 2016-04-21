@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Net;
 
-namespace Kian.Objects.Anime
+namespace Kian.Core.Objects.Anime
 {
     public class Download : INotifyPropertyChanged
     {
@@ -29,7 +29,7 @@ namespace Kian.Objects.Anime
                 if (_fileSize == null)
                 {
                     _fileSize = "?";
-                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(DownloadLink);
+                    /*HttpWebRequest req = (HttpWebRequest)WebRequest.Create(DownloadLink);
                     req.Referer = "http://www.animebam.net/";
                     req.Method = "HEAD";
                     using (WebResponse resp = req.GetResponse())
@@ -39,7 +39,7 @@ namespace Kian.Objects.Anime
                         {
                             _fileSize = HelperFunctions.GetBytesReadable(ContentLength);
                         }
-                    }
+                    }*/
                 }
 
                 return _fileSize;

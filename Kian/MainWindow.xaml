@@ -5,7 +5,7 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Kian"
-                      xmlns:malapi="clr-namespace:Kian.MyAnimeList.Objects.API.Anime"
+                      xmlns:malapi="clr-namespace:Kian.Core.MyAnimeList.Objects.API.Anime"
                       mc:Ignorable="d"
                       EnableDWMDropShadow="True"
                       WindowStartupLocation="CenterScreen"
@@ -32,7 +32,7 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40" />
-                        <RowDefinition Height="5" />
+                        <RowDefinition Height="0" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
@@ -49,24 +49,20 @@
                         </TextBox>
                     </Grid>
 
-                    <Grid Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                        <Grid.OpacityMask>
-                            <LinearGradientBrush MappingMode="Absolute" EndPoint="0,20" StartPoint="0,5">
-                                <LinearGradientBrush.RelativeTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                                        <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                                        <RotateTransform Angle="180" CenterY="0.5" CenterX="0.5"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </LinearGradientBrush.RelativeTransform>
-                                <GradientStop Color="Transparent" Offset="0"/>
-                                <GradientStop Color="Black" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Grid.OpacityMask>
-
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            <StackPanel >
+                    
+                    <Expander Loaded="LoadMalData" Grid.Row="2">
+                        <Expander.Header>
+                            <Grid>
+                                <Label Content="MAL" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" />
+                                <ItemsControl HorizontalAlignment="Right">
+                                    <Border Style="{StaticResource TagBorder}" Background="White">
+                                        <Label Content="4 Results" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    </Border>
+                                </ItemsControl>
+                            </Grid>
+                        </Expander.Header>
+                        <ScrollViewer>
+                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems, ElementName=window}" Background="White">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
@@ -118,22 +114,29 @@
                                                                             <DataTemplate>
                                                                                 <Border BorderThickness="0,0,0,1" BorderBrush="White">
                                                                                     <Expander Header="{Binding Name}">
-                                                                                        <ListView ItemsSource="{Binding Downloads}" SelectionMode="Extended" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListBox}">
-                                                                                            <ListView.View>
-                                                                                                <GridView>
-                                                                                                    <GridViewColumn Header="Episode Name" Width="Auto" DisplayMemberBinding="{Binding EpisodeName}" />
-                                                                                                    <GridViewColumn Header="Size" Width="Auto" DisplayMemberBinding="{Binding FileSize}" />
-                                                                                                    <GridViewColumn Header="Resolution" Width="Auto" DisplayMemberBinding="{Binding Resolution}" />
-                                                                                                </GridView>
-                                                                                            </ListView.View>
-                                                                                            <ListView.ItemTemplate>
+                                                                                        <ItemsControl ItemsSource="{Binding DownloadGroups}">
+                                                                                            <ItemsControl.ItemTemplate>
                                                                                                 <DataTemplate>
-                                                                                                    <UniformGrid Rows="1" Background="Transparent">
-                                                                                                        <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
-                                                                                                    </UniformGrid>
+                                                                                                    <Expander Header="{Binding GroupName}">
+                                                                                                        <ListView ItemsSource="{Binding Downloads}" SelectionMode="Extended" AlternationCount="2" ItemContainerStyle="{StaticResource AlternatingListBox}">
+                                                                                                            <ListView.View>
+                                                                                                                <GridView>
+                                                                                                                    <GridViewColumn Header="Episode Name" Width="Auto" DisplayMemberBinding="{Binding EpisodeName}" />
+                                                                                                                    <GridViewColumn Header="Size" Width="Auto" DisplayMemberBinding="{Binding FileSize}" />
+                                                                                                                </GridView>
+                                                                                                            </ListView.View>
+                                                                                                            <ListView.ItemTemplate>
+                                                                                                                <DataTemplate>
+                                                                                                                    <UniformGrid Rows="1" Background="Transparent">
+                                                                                                                        <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
+                                                                                                                    </UniformGrid>
+                                                                                                                </DataTemplate>
+                                                                                                            </ListView.ItemTemplate>
+                                                                                                        </ListView>
+                                                                                                    </Expander>
                                                                                                 </DataTemplate>
-                                                                                            </ListView.ItemTemplate>
-                                                                                        </ListView>
+                                                                                            </ItemsControl.ItemTemplate>
+                                                                                        </ItemsControl>
                                                                                     </Expander>
                                                                                 </Border>
                                                                             </DataTemplate>
@@ -151,7 +154,8 @@
                                 <Grid Height="15"/>
                             </StackPanel>
                         </ScrollViewer>
-                    </Grid>
+                        -->
+                    </Expander>
                 </Grid>
             </TabItem>
         </TabControl>

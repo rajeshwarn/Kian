@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Kian.Core.Objects.Anime;
+using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Kian.Objects.Anime
+namespace Kian.Core.Objects.Anime
 {
     public class DownloadSource : INotifyPropertyChanged
     {
         private string _name;
-        private List<Download> _downloads = new List<Download>();
+        private List<DownloadGroup> _downloadGroups = new List<DownloadGroup>();
 
         public string Name
         {
@@ -22,17 +23,17 @@ namespace Kian.Objects.Anime
             }
         }
 
-        public List<Download> Downloads
+        public List<DownloadGroup> DownloadGroups
         {
             get
             {
-                return _downloads;
+                return _downloadGroups;
             }
             set
             {
-                if (_downloads == value) return;
-                _downloads = value;
-                NotifyPropertyChanged("Downloads");
+                if (_downloadGroups == value) return;
+                _downloadGroups = value;
+                NotifyPropertyChanged("DownloadGroups");
             }
         }
 

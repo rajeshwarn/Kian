@@ -47,6 +47,7 @@
     <Compile Include="MyAnimeList\Objects\API\Anime\anime.cs" />
     <Compile Include="Objects\Anime\Anime.cs" />
     <Compile Include="Objects\Anime\Download.cs" />
+    <Compile Include="Objects\Anime\DownloadGroup.cs" />
     <Compile Include="Objects\Anime\DownloadSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,8 +1,8 @@
-﻿using Kian.MyAnimeList.Objects.API.Anime;
+﻿using Kian.Core.MyAnimeList.Objects.API.Anime;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Kian.Objects.Anime
+namespace Kian.Core.Objects.Anime
 {
     public class Anime : INotifyPropertyChanged
     {
