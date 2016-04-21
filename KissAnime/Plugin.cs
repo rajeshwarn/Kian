@@ -1,74 +1,112 @@
-﻿using Kian.Core;
+﻿using Cloudflare_Evader;
+using CsQuery;
+using Kian.Core;
+using Kian.Objects.Anime;
 using System;
-using System.ComponentModel.Composition;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using CloudFlareUtilities;
-using System.Net.Http;
-using Kian.Objects.Anime;
-using CsQuery;
 
 namespace KissAnime
 {
-    /*
     [Export(typeof(IPlugin))]
     public class Plugin : IPlugin
     {
-        HttpClient client = new HttpClient(new ClearanceHandler());
-
         private string pluginName = "KissAnime";
-        private string baseUrl = "https://kissanime.to/";
+        private Uri baseUri = new Uri("https://kissanime.to/");
         private string searchUrl = "https://kissanime.to/Search/Anime";
+
+        private WebClient client = null;
+        private WebHeaderCollection _defaultHeaders;
+
+        private WebHeaderCollection defaultHeaders
+        {
+            get
+            {
+                return CloneHeaders(_defaultHeaders);
+            }
+        }
 
         public string Name { get { return pluginName; } }
 
-        public async Task<DownloadSource> GetAnime(string searchString)
+        public DownloadSource GetAnime(string searchString)
         {
-            DownloadSource downloadSource = new DownloadSource { Name = pluginName };
-            FormUrlEncodedContent postData = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("keyword", searchString) });
-            HttpResponseMessage search = await client.PostAsync(searchUrl, postData);
-
-            while (!search.IsSuccessStatusCode)
+            while (client == null)
             {
-                search = await client.PostAsync(searchUrl, postData);
+                Console.WriteLine("Trying..");
+                client = CloudflareEvader.CreateBypassedWebClient(baseUri.AbsoluteUri);
+                _defaultHeaders = client.Headers;
             }
-                CQ searchCq = new CQ(await search.Content.ReadAsStringAsync());
+
+            DownloadSource downloadSource = new DownloadSource { Name = pluginName };
+
+            client.Headers = defaultHeaders;
+            client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+
+            string search = client.UploadString(searchUrl, "keyword=" + searchString);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                CQ searchCq = new CQ(search);
 
                 foreach (IDomObject searchDomObject in searchCq[".listing a"].ToList())
                 {
                     string animeName = searchDomObject.InnerText;
-                    HttpResponseMessage episodes = await client.GetAsync(baseUrl + searchDomObject.Attributes["Href"]);
-                    if (episodes.IsSuccessStatusCode)
+
+                    client.Headers = defaultHeaders;
+                    string episodes = client.DownloadString("https://kissanime.to/Anime/Noragami-Dub"); //new Uri(baseUri, searchDomObject.Attributes["Href"]).AbsoluteUri);
+
+                    if (!string.IsNullOrEmpty(episodes))
                     {
-                        CQ episodesQc = new CQ(await episodes.Content.ReadAsStringAsync());
+                        CQ episodesQc = new CQ(episodes);
 
                         foreach (IDomObject episodeDomObject in episodesQc[".listing a"].ToList())
                         {
                             string episodeName = episodeDomObject.InnerText;
-                            await GetVideo(baseUrl + episodeDomObject.Attributes["Href"]);
+                            downloadSource.Downloads.Add(new Download
+                            {
+                                DownloadLink = GetVideo(client, new Uri(baseUri, episodeDomObject.Attributes["Href"]).AbsoluteUri),
+                                EpisodeName = animeName,
+                                FileName = "filename.extension",
+                                Resolution = "???p"
+                            });
                         }
                     }
                 }
-
                 return downloadSource;
-
+            }
             return null;
         }
 
-        private async Task<string> GetVideo(string url)
+        private string GetVideo(WebClient client, string url)
         {
-            HttpResponseMessage episode = await client.GetAsync(url);
+            client.Headers = defaultHeaders;
+            string episode = client.DownloadString(url);
 
-            if (episode.IsSuccessStatusCode)
+            if (!string.IsNullOrEmpty(episode))
             {
-                CQ episodeQc = new CQ(await episode.Content.ReadAsStringAsync());
-                var target = episodeQc["#my_video_1_html5_api"][0].Attributes["Href"];
-                return episodeQc["div:contains(\"CLICK HERE\")"].Attr("Href");
+                CQ episodeQc = new CQ(episode);
+
+                var target = episodeQc["video"][0].Attributes.ToList();
+                var t1 = episodeQc["a[href *= 'googlevideo']"].ToList();
+
+                return null;
             }
             return "";
         }
+
+        private WebHeaderCollection CloneHeaders(WebHeaderCollection headerCollection)
+        {
+            WebHeaderCollection newHeaderCollection = new WebHeaderCollection();
+
+            foreach (string key in headerCollection.AllKeys)
+                newHeaderCollection.Add(key, headerCollection[key]);
+
+            return newHeaderCollection;
+        }
     }
-*/
 }

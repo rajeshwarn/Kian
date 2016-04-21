@@ -6,7 +6,7 @@ namespace Kian.Objects.Anime
     public class DownloadSource : INotifyPropertyChanged
     {
         private string _name;
-        private List<Download> _downloads;
+        private List<Download> _downloads = new List<Download>();
 
         public string Name
         {

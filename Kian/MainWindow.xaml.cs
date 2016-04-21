@@ -16,10 +16,10 @@ namespace Kian
 {
     public partial class MainWindow : MetroWindow
     {
-        IEnumerable<IPlugin> plugins;
-        private NetworkCredential _malLogin = new NetworkCredential(, );
+        private IEnumerable<IPlugin> plugins;
+        private NetworkCredential _malLogin;
         private List<Anime> _searchItems;
-        PluginManager<IPlugin> loader = new PluginManager<IPlugin>("Plugins");
+        private PluginManager<IPlugin> loader = new PluginManager<IPlugin>("Plugins");
 
         public MainWindow()
         {
@@ -107,6 +107,7 @@ namespace Kian
                           }
                       });
         }
+
         private void LoadPlugins()
         {
             PluginManager<IPlugin> loader = new PluginManager<IPlugin>("Plugins");
@@ -121,7 +122,7 @@ namespace Kian
             string searchString = searchStringBox.Text;
 
             BackgroundWorker malBackgroundWorker = new BackgroundWorker();
-            malBackgroundWorker.DoWork += async delegate
+            malBackgroundWorker.DoWork += delegate
             {
                 anime searchResults = MyAnimeList.API.Anime.Search.GetResults(searchString, _malLogin);
                 if (searchResults != null && searchResults.Items != null)
@@ -135,9 +136,14 @@ namespace Kian
 
                         foreach (IPlugin plugin in plugins)
                         {
-                            DownloadSource source = await plugin.GetAnime(entry.title);
+                            DownloadSource source = plugin.GetAnime(entry.title);
                             if (source != null)
+                            {
+                                if (searchEntry.DownloadSources == null)
+                                    searchEntry.DownloadSources = new List<DownloadSource>();
+
                                 searchEntry.DownloadSources.Add(source);
+                            }
                         }
 
                         _searchItems.Add(searchEntry);

@@ -4,7 +4,7 @@
  <Namespaces>
   <Namespace Name="CloudFlareUtilities">
    <Messages>
-    <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Status="Active" Created="2016-04-20 20:57:54Z" FixCategory="Breaking">
+    <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Status="Active" Created="2016-04-21 06:03:22Z" FixCategory="Breaking">
      <Issue Certainty="50" Level="Warning">Consider merging the types defined in 'CloudFlareUtilities' with another namespace.</Issue>
     </Message>
    </Messages>

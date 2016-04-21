@@ -9,3 +9,8 @@ C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\KissAnime\bin\
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\KissAnime\bin\Debug\CloudFlareUtilities.pdb
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\KissAnime.dll
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\KissAnime.pdb
+C:\Users\William\Documents\# GitHub #\Kian\KissAnime\obj\Debug\KissAnime.csprojResolveAssemblyReference.cache
+C:\Users\William\Documents\# GitHub #\Kian\KissAnime\obj\Debug\KissAnime.dll
+C:\Users\William\Documents\# GitHub #\Kian\KissAnime\obj\Debug\KissAnime.pdb
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\KissAnime.dll
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\KissAnime.pdb
