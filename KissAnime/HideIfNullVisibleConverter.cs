@@ -3,12 +3,10 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Kian
+namespace KissAnime
 {
     public class HideIfNullVisibleConverter : IValueConverter
     {
-        #region Implementation of IValueConverter
-
         public object Convert(object value,
                               Type targetType, object parameter, CultureInfo culture)
         {
@@ -23,7 +21,5 @@ namespace Kian
         {
             throw new NotImplementedException();
         }
-
-        #endregion Implementation of IValueConverter
     }
 }

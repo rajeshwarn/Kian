@@ -1,0 +1,6 @@
+C:\Users\William\Documents\# GitHub #\Kian\Plugin\obj\Debug\Plugin.csprojResolveAssemblyReference.cache
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\Plugin.dll
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\Plugin.pdb
+C:\Users\William\Documents\# GitHub #\Kian\Plugin\obj\Debug\Plugin.dll
+C:\Users\William\Documents\# GitHub #\Kian\Plugin\obj\Debug\Plugin.pdb
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\Plugin.xaml

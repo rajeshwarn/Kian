@@ -1,24 +1,14 @@
-﻿using Cloudflare_Evader;
-using CsQuery;
-using Kian.Core;
-using Kian.Core.Objects.Anime;
+﻿using Kian.Core;
 using System;
-using System.Collections.Generic;
-using System.Windows.Controls;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Markup;
 using System.IO;
+using System.Windows.Controls;
+using System.Windows.Markup;
 
 namespace KissAnime
 {
     [Export(typeof(IPlugin))]
-    public class Plugin : IPlugin
+    public class KissAnime : IPlugin
     {
         private string _name = "KissAnime";
         private ContentControl _pluginContent;
@@ -30,6 +20,7 @@ namespace KissAnime
                 throw new NotImplementedException();
             }
         }
+
         public ContentControl PluginContent
         {
             get
@@ -50,7 +41,7 @@ namespace KissAnime
 
         public void OnStart()
         {
-            PluginContent.Content = XamlReader.Load(new FileStream(Path.Combine("Plugins", _name + ".xaml"), FileMode.Open)); ;
+            PluginContent.Content = XamlReader.Load(new FileStream(Path.Combine("Plugins", _name + ".xaml"), FileMode.Open));
         }
     }
 }

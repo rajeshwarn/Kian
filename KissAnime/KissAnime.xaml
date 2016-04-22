@@ -3,42 +3,41 @@
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-          xmlns:local="clr-namespace:Kian"
-          xmlns:malapi="clr-namespace:Kian.Core.MyAnimeList.Objects.API.Anime"
+          xmlns:local="clr-namespace:KissAnime"
           Grid.Row="2">
 
     <Expander.Resources>
-        <ResourceDictionary>
-            <Style TargetType="Border" x:Key="TagBorder">
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="CornerRadius" Value="3" />
-            </Style>
-            <Style TargetType="{x:Type ListViewItem}" x:Key="AlternatingListBox">
-                <Style.Triggers>
-                    <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                        <Setter Property="Control.Background" Value="Transparent"></Setter>
-                    </Trigger>
-                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                        <Setter Property="Control.Background" Value="#22000000"></Setter>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </ResourceDictionary>
+        <Style TargetType="Border" x:Key="TagBorder">
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="CornerRadius" Value="3" />
+        </Style>
+        <Style TargetType="{x:Type ListViewItem}" x:Key="AlternatingListBox">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Control.Background" Value="Transparent"></Setter>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Control.Background" Value="#22000000"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <local:HideIfNullVisibleConverter x:Key="HideIfNullVisibleConverter" />
     </Expander.Resources>
-    
+
     <Expander.Header>
         <Grid>
-            <Label Content="KissAnime" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" />
+            <Label Content="MAL" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" />
             <ItemsControl HorizontalAlignment="Right">
                 <Border Style="{StaticResource TagBorder}" Background="White">
-                    <Label Content="4 Results" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Label Content="X Results" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Border>
             </ItemsControl>
         </Grid>
     </Expander.Header>
+
     <ScrollViewer>
         <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <ItemsControl ItemsSource="{Binding SearchItems, ElementName=window}" Background="White">
+            <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems, ElementName=window}" Background="White">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border BorderThickness="0,0,0,1" BorderBrush="White">
@@ -64,7 +63,7 @@
                                 </Expander.Header>
                                 <StackPanel>
                                     <TabControl>
-                                        <TabItem Header="Info" Visibility="{Binding MalData, FallbackValue=Collapsed}">
+                                        <TabItem Header="Info" Visibility="{Binding MalData, Converter={StaticResource HideIfNullVisibleConverter}, FallbackValue=Collapsed}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
@@ -76,13 +75,13 @@
 
                                                 <StackPanel Grid.Column="1">
                                                     <Label Grid.Column="1"
-                                                           FontSize="16" FontWeight="Bold" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding MalData.title, FallbackValue='Loading...'}" />
+                                                                               FontSize="16" FontWeight="Bold" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding MalData.title, FallbackValue='Loading...'}" />
                                                     <TextBlock Grid.Column="1"
-                                                               Margin="5" TextWrapping="Wrap" Text="{Binding MalData.synopsis, FallbackValue='' }" />
+                                                                                   Margin="5" TextWrapping="Wrap" Text="{Binding MalData.synopsis, FallbackValue='' }" />
                                                 </StackPanel>
                                             </Grid>
                                         </TabItem>
-                                        <TabItem Header="Download" Visibility="{Binding DownloadSources, FallbackValue=Collapsed}">
+                                        <TabItem Header="Download" Visibility="{Binding DownloadSources, Converter={StaticResource HideIfNullVisibleConverter}, FallbackValue=Collapsed}">
                                             <Grid>
                                                 <ItemsControl ItemsSource="{Binding DownloadSources}">
                                                     <ItemsControl.ItemTemplate>
@@ -126,7 +125,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Grid Height="15"/>
+            <Grid Height="15" />
         </StackPanel>
     </ScrollViewer>
 </Expander>

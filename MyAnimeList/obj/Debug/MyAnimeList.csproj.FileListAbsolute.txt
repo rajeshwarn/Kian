@@ -1,0 +1,15 @@
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\obj\Debug\MyAnimeList.csprojResolveAssemblyReference.cache
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MyAnimeList.dll
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MyAnimeList.pdb
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\Kian.Core.dll
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\Kian.Core.pdb
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\obj\Debug\MyAnimeList.dll
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\obj\Debug\MyAnimeList.pdb
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MyAnimeList.xaml
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MahApps.Metro.dll
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MahApps.Metro.pdb
+C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MahApps.Metro.xml
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.xaml
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.dll
+C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.pdb

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KissAnime", "KissAnime\Kiss
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudflare_Evader", "Cloudflare_Evader\Cloudflare_Evader.csproj", "{7CB99494-24B7-4262-9FEB-043A016F5F6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyAnimeList", "MyAnimeList\MyAnimeList.csproj", "{828944C8-971B-4722-8A6C-3D8566C1B3B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,11 +37,16 @@ Global
 		{7CB99494-24B7-4262-9FEB-043A016F5F6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CB99494-24B7-4262-9FEB-043A016F5F6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CB99494-24B7-4262-9FEB-043A016F5F6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{828944C8-971B-4722-8A6C-3D8566C1B3B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{828944C8-971B-4722-8A6C-3D8566C1B3B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{828944C8-971B-4722-8A6C-3D8566C1B3B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{828944C8-971B-4722-8A6C-3D8566C1B3B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{42A9F9F8-9812-4406-98CE-11AB8A5BE2D7} = {6F405F9E-CF6B-4345-B13A-D644C6FE4ED8}
+		{828944C8-971B-4722-8A6C-3D8566C1B3B2} = {6F405F9E-CF6B-4345-B13A-D644C6FE4ED8}
 	EndGlobalSection
 EndGlobal
