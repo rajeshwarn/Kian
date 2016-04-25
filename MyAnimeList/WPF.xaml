@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MyAnimeList"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             d:DesignHeight="300" d:DesignWidth="500">
+             d:DesignHeight="300" d:DesignWidth="500" Initialized="UserControl_Initialized">
 
     <Expander>
         <Expander.Resources>
@@ -21,41 +21,39 @@
                 <Label Content="MAL" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
                 <ItemsControl HorizontalAlignment="Right" Grid.RowSpan="2">
                     <Border Style="{StaticResource TagBorder}" Background="White">
-                        <Label Content="X Results" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <Label Content="{Binding SearchItemsCountString, FallbackValue=Error}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     </Border>
                 </ItemsControl>
             </Grid>
         </Expander.Header>
 
-        <ScrollViewer>
-            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems}" Background="White">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Expander>
-                                <Expander.Resources>
-                                    <Style TargetType="Border" x:Key="TagBorder">
-                                        <Setter Property="BorderThickness" Value="2" />
-                                        <Setter Property="CornerRadius" Value="3" />
-                                    </Style>
-                                </Expander.Resources>
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems, FallbackValue=Error}" Background="White">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Expander Expanded="Anime_Expanded">
+                            <Expander.Resources>
+                                <Style TargetType="Border" x:Key="TagBorder">
+                                    <Setter Property="BorderThickness" Value="2" />
+                                    <Setter Property="CornerRadius" Value="3" />
+                                </Style>
+                            </Expander.Resources>
 
-                                <Expander.Header>
-                                    <Grid>
-                                        <Label Content="{Binding title}" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
-                                        <ItemsControl HorizontalAlignment="Right" Grid.RowSpan="2">
-                                            <Border Style="{StaticResource TagBorder}" Background="White">
-                                                <Label Content="X Results" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                            </Border>
-                                        </ItemsControl>
-                                    </Grid>
-                                </Expander.Header>
-                            </Expander>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <Grid Height="15" />
-            </StackPanel>
-        </ScrollViewer>
+                            <Expander.Header>
+                                <Grid>
+                                    <Label Content="{Binding title}" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
+                                    <ItemsControl HorizontalAlignment="Right" Grid.RowSpan="2">
+                                        <Border Style="{StaticResource TagBorder}" Background="White">
+                                            <Label Content="X Results" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Border>
+                                    </ItemsControl>
+                                </Grid>
+                            </Expander.Header>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Grid Height="15" />
+        </StackPanel>
     </Expander>
 </UserControl>

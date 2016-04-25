@@ -1,6 +1,8 @@
 ﻿using Kian.Core.MyAnimeList.API.Anime;
 using Kian.Core.MyAnimeList.Objects.API.Anime;
 using Kian.Core.Objects.Anime;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +31,7 @@ namespace MyAnimeList
             InitializeComponent();
         }
 
-        private NetworkCredential _malLogin = new NetworkCredential("wildbook", "wille001");
+        private NetworkCredential _malLogin;// = new NetworkCredential("username", "password"); // For debugging only, remove real data when committing. (FILTER)
         private List<animeEntry> _searchItems;
 
         public List<animeEntry> SearchItems
@@ -55,40 +57,7 @@ namespace MyAnimeList
                 _searchItems = value;
             }
         }
-
-        private void LoadData(string searchString)
-        {
-            /*
-            Anime entry = (Anime)expander.DataContext;
-
-            if (_malLogin == null)
-            {
-                LoginDialogData login = await this.ShowLoginAsync("You need to log in to MyAnimeList.net to continue.", "Enter your MAL login:");
-
-                if (string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
-                {
-                    expander.IsExpanded = false;
-                    return;
-                }
-
-                _malLogin = new NetworkCredential(login.Username, login.Password);
-            }
-
-            if (entry.MalData == null)
-            {
-                anime searchResults = Search.GetResults(entry.Title, _malLogin);
-
-                if (searchResults != null && searchResults.Items.Length > 0)
-                {
-                    entry.MalData = searchResults.Items[0];
-                }
-                else
-                {
-                    entry.MalData = null;
-                }
-            }
-            */
-        }
+        public string SearchItemsCountString { get { return SearchItems.Count + ((SearchItems.Count == 1) ? " Result" : "Results"); } }
 
         public void OnSearch(string searchString)
         {
@@ -103,5 +72,34 @@ namespace MyAnimeList
 
             searchItems.Items.Refresh();
         }
-    }
+
+        private void Anime_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander expander = (Expander)sender;
+
+            animeEntry entry = (animeEntry)expander.DataContext;
+
+            if (entry == null)
+            {
+                anime searchResults = Search.GetResults(entry.title, _malLogin);
+
+                if (searchResults != null && searchResults.Items.Length > 0)
+                {
+                    entry = searchResults.Items[0];
+                }
+                else
+                {
+                    entry = null;
+                }
+            }
+        }
+
+        private async void UserControl_Initialized(object sender, EventArgs e)
+        {
+            if (_malLogin == null)
+            {
+                LoginDialogData login = await((MetroWindow)Window.GetWindow(this)).ShowLoginAsync("You need to log in to MyAnimeList.net to use it.", "Enter your MAL login:");
+                _malLogin = new NetworkCredential(login.Username, login.Password);
+            }
+        }
 }

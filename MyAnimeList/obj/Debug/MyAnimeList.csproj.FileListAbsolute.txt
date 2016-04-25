@@ -12,7 +12,6 @@ C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MahApps.Metro.p
 C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MahApps.Metro.xml
 C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.dll
 C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.pdb
-C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\MyAnimeList.xaml
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\MyAnimeList.dll
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\MyAnimeList.pdb
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList.csprojResolveAssemblyReference.cache
@@ -23,3 +22,8 @@ C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\obj\Debug\MyAnimeList_Mar
 C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\obj\Debug\MyAnimeList.g.resources
 C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\obj\Debug\WPF.g.cs
 C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\obj\Debug\WPF.baml
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\WPF.g.cs
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList_MarkupCompile.cache
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList_MarkupCompile.lref
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\WPF.baml
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList.g.resources
