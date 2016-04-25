@@ -12,3 +12,7 @@ C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bi
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bin\Debug\System.Windows.Interactivity.dll
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.pdb
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.xml
+C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.dll
+C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.pdb
+C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.xml

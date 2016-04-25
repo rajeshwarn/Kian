@@ -17,8 +17,7 @@ namespace MyAnimeList
     {
         private string _name = "MyAnimeList";
         private ContentControl _pluginContent;
-        private MetroWindow _mainWindow;
-        private MyAnimeList myAnimeList;
+        private WPF wpf;
 
         public string Name
         {
@@ -41,28 +40,14 @@ namespace MyAnimeList
             }
         }
 
-        public MetroWindow MainWindow
-        {
-            get
-            {
-                return _mainWindow;
-            }
-
-            set
-            {
-                _mainWindow = value;
-            }
-        }
-
         public void OnSearch(string searchString)
         {
-            myAnimeList.OnSearch(searchString);
+            wpf.OnSearch(searchString);
         }
 
         public void OnStart()
         {
-            PluginContent.Content = XamlReader.Load(new FileStream(Path.Combine("Plugins", _name + ".xaml"), FileMode.Open));
-            myAnimeList = new MyAnimeList(this);
+            PluginContent.Content = wpf = new WPF();
         }
     }
 }

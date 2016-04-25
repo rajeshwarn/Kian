@@ -7,9 +7,9 @@ namespace Kian.Core
     {
         string Name { get; }
         ContentControl PluginContent { get; set; }
-        MetroWindow MainWindow { get; set; }
 
         void OnStart();
+
         void OnSearch(string searchTerm);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Kian.Core;
+using MahApps.Metro.Controls;
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -10,14 +11,28 @@ namespace KissAnime
     [Export(typeof(IPlugin))]
     public class KissAnime : IPlugin
     {
-        private string _name = "KissAnime";
+        private MetroWindow _mainWindow;
         private ContentControl _pluginContent;
+        private string _name = "KissAnime";
+
+        public MetroWindow MainWindow
+        {
+            get
+            {
+                return _mainWindow;
+            }
+
+            set
+            {
+                _mainWindow = value;
+            }
+        }
 
         public string Name
         {
             get
             {
-                throw new NotImplementedException();
+                return _name;
             }
         }
 
