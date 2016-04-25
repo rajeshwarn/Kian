@@ -1,4 +1,4 @@
-﻿using System.Windows;
+﻿using MahApps.Metro.Controls;
 using System.Windows.Controls;
 
 namespace Kian.Core
@@ -7,6 +7,7 @@ namespace Kian.Core
     {
         string Name { get; }
         ContentControl PluginContent { get; set; }
+        MetroWindow MainWindow { get; set; }
 
         void OnStart();
         void OnSearch(string searchTerm);

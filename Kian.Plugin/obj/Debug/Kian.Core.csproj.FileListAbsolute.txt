@@ -8,3 +8,7 @@ C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\bin\Debug\Kian.Core.pdb
 C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\obj\Debug\Kian.Core.csprojResolveAssemblyReference.cache
 C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\obj\Debug\Kian.Core.dll
 C:\Users\William\Documents\# GitHub #\Kian\Kian.Plugin\obj\Debug\Kian.Core.pdb
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.dll
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.pdb
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian.Plugin\bin\Debug\MahApps.Metro.xml

@@ -13,3 +13,9 @@ C:\Users\William\Documents\# GitHub #\Kian\MyAnimeList\bin\Debug\MahApps.Metro.x
 C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.xaml
 C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.dll
 C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.pdb
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\MyAnimeList.xaml
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\MyAnimeList.dll
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\MyAnimeList.pdb
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList.csprojResolveAssemblyReference.cache
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList.dll
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList.pdb
