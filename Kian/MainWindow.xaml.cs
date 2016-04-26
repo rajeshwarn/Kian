@@ -1,7 +1,4 @@
 ﻿using Kian.Core;
-using Kian.Core.MyAnimeList.API.Anime;
-using Kian.Core.MyAnimeList.Objects.API.Anime;
-using Kian.Core.Objects.Anime;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System.Collections.Generic;
@@ -17,7 +14,7 @@ namespace Kian
     {
         private IEnumerable<IPlugin> plugins;
         private PluginManager<IPlugin> loader = new PluginManager<IPlugin>("Plugins");
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -31,8 +28,9 @@ namespace Kian
 
         private void SearchCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
+            string searchString = ((TextBox)sender).Text;
             foreach (IPlugin plugin in plugins)
-                plugin.OnSearch(((TextBox)sender).Text);
+                plugin.OnSearch(searchString);
         }
 
         private void window_Loaded(object sender, RoutedEventArgs e)

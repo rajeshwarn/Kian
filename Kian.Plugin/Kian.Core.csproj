@@ -54,12 +54,6 @@
   <ItemGroup>
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="MyAnimeList\API\Anime\Search.cs" />
-    <Compile Include="MyAnimeList\Objects\API\Anime\anime.cs" />
-    <Compile Include="Objects\Anime\Anime.cs" />
-    <Compile Include="Objects\Anime\Download.cs" />
-    <Compile Include="Objects\Anime\DownloadGroup.cs" />
-    <Compile Include="Objects\Anime\DownloadSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,14 +1,14 @@
-﻿using Kian.Core.MyAnimeList.Objects.API.Anime;
+﻿using MyAnimeList.Objects.API.Anime;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace Kian.Core.MyAnimeList.API.Anime
+namespace MyAnimeList.API.Anime
 {
     public class Search
     {
-        public static anime GetResults(string searchString, NetworkCredential loginCredenitals)
+        public static anime GetResults(string searchString, NetworkCredential loginCredentials)
         {
             anime anime = new anime { };
 
@@ -16,7 +16,7 @@ namespace Kian.Core.MyAnimeList.API.Anime
             {
                 using (WebClient client = new WebClient())
                 {
-                    client.Credentials = loginCredenitals;
+                    client.Credentials = loginCredentials;
                     StringReader reader = new StringReader(client.DownloadString(string.Format("http://myanimelist.net/api/anime/search.xml?q={0}", searchString)));
                     anime = (anime)new XmlSerializer(typeof(anime)).Deserialize(reader);
                     reader.Close();

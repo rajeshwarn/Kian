@@ -1,10 +1,10 @@
-﻿using Kian.Core.MyAnimeList.API.Anime;
-using Kian.Core.MyAnimeList.Objects.API.Anime;
-using Kian.Core.Objects.Anime;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using MyAnimeList.API.Anime;
+using MyAnimeList.Objects.API.Anime;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -24,8 +24,16 @@ namespace MyAnimeList
     /// <summary>
     /// Interaction logic for WPF.xaml
     /// </summary>
-    public partial class WPF : UserControl
+    public partial class WPF : UserControl, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        protected void NotifyPropertyChanged(string info)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
+        }
+
         public WPF()
         {
             InitializeComponent();
@@ -33,6 +41,61 @@ namespace MyAnimeList
 
         private NetworkCredential _malLogin;// = new NetworkCredential("username", "password"); // For debugging only, remove real data when committing. (FILTER)
         private List<animeEntry> _searchItems;
+        private Visibility _display = Visibility.Collapsed;
+        private string _searchItemsCountString = "Ready!";
+        private bool _searching = false;
+        private bool _enabled = true;
+        private bool _authenticated = false;
+
+        public bool Searching
+        {
+            get
+            {
+                return _searching;
+            }
+            set
+            {
+                _searching = value;
+
+                if (_searching)
+                {
+                    Enabled = false;
+                    Display = Visibility.Visible;
+                }
+                else
+                    Enabled = true;
+
+                SearchItemsCountString = "Searching";
+
+                NotifyPropertyChanged("Searching");
+            }
+        }
+
+        public bool Enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+                NotifyPropertyChanged("Enabled");
+            }
+        }
+
+        public bool Authenticated
+        {
+            get
+            {
+                return _authenticated;
+            }
+            set
+            {
+                _authenticated = value;
+                NotifyPropertyChanged("Authenticated");
+            }
+        }
 
         public List<animeEntry> SearchItems
         {
@@ -55,22 +118,65 @@ namespace MyAnimeList
             set
             {
                 _searchItems = value;
+                NotifyPropertyChanged("SearchItems");
             }
         }
-        public string SearchItemsCountString { get { return SearchItems.Count + ((SearchItems.Count == 1) ? " Result" : "Results"); } }
+
+        public Visibility Display
+        {
+            get
+            {
+                return _display;
+            }
+            set
+            {
+                _display = value;
+                NotifyPropertyChanged("Display");
+            }
+        }
+
+        public string SearchItemsCountString
+        {
+            get
+            {
+                return _searchItemsCountString;
+            }
+            set
+            {
+                _searchItemsCountString = value;
+                NotifyPropertyChanged("SearchItemsCountString");
+            }
+        }
 
         public void OnSearch(string searchString)
         {
-            SearchItems.Clear();
-            searchItems.Items.Refresh();
+            BackgroundWorker bw = new BackgroundWorker();
 
-            anime searchResults = Search.GetResults(searchString, _malLogin);
-            if (searchResults != null && searchResults.Items != null)
+            bw.DoWork += delegate
             {
-                SearchItems = searchResults.Items.ToList();
-            }
+                Searching = true;
 
-            searchItems.Items.Refresh();
+                SearchItems.Clear();
+
+                anime searchResults = Search.GetResults(searchString, _malLogin);
+
+                if (searchResults != null && searchResults.Items != null)
+                {
+                    SearchItems = searchResults.Items.ToList();
+                    Display = Visibility.Visible;
+                }
+                else
+                    Display = Visibility.Collapsed;
+
+                Searching = false;
+
+                if (SearchItems.Count == 1)
+                    SearchItemsCountString = SearchItems.Count + " Result";
+                else
+                    SearchItemsCountString = SearchItems.Count + " Results";
+            };
+
+            bw.RunWorkerAsync();
         }
 
         private void Anime_Expanded(object sender, RoutedEventArgs e)
@@ -94,12 +200,48 @@ namespace MyAnimeList
             }
         }
 
-        private async void UserControl_Initialized(object sender, EventArgs e)
+        private async void UserControl_Loaded(object sender, EventArgs e)
         {
-            if (_malLogin == null)
+            await Authenticate();
+        }
+
+        private async Task<bool> Authenticate()
+        {
+            MetroWindow mainWindow = ((MetroWindow)Window.GetWindow(this));
+            LoginDialogData login = await mainWindow.ShowLoginAsync("You need to log in to MyAnimeList.net to use it.", "Enter your MAL login:");
+            NetworkCredential loginCredentials = new NetworkCredential(login.Username, login.Password);
+
+            if (!string.IsNullOrEmpty(loginCredentials.UserName) &&
+                !string.IsNullOrEmpty(loginCredentials.Password) &&
+                API.Authentication.VerifyCredentials(loginCredentials))
             {
-                LoginDialogData login = await((MetroWindow)Window.GetWindow(this)).ShowLoginAsync("You need to log in to MyAnimeList.net to use it.", "Enter your MAL login:");
-                _malLogin = new NetworkCredential(login.Username, login.Password);
+                Authenticated = true;
+                _malLogin = loginCredentials;
+                Display = Visibility.Visible;
+                return true;
+            }
+            else
+            {
+                MetroDialogSettings metroDialogSettings = new MetroDialogSettings()
+                {
+                    AffirmativeButtonText = "Yes",
+                    NegativeButtonText = "No",
+                    AnimateHide = true,
+                    AnimateShow = true,
+                    DefaultButtonFocus = MessageDialogResult.Affirmative,
+                };
+
+                MessageDialogResult retry = await mainWindow.ShowMessageAsync("Your MyAnimeList login could not be verified.", "Do you want to try re-entering it?", MessageDialogStyle.AffirmativeAndNegative, metroDialogSettings);
+                if (retry == MessageDialogResult.Affirmative)
+                {
+                    return await Authenticate();
+                }
+                else
+                {
+                    Authenticated = false;
+                    return false;
+                }
             }
         }
+    }
 }

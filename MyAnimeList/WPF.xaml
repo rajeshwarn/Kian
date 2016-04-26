@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:MyAnimeList"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             d:DesignHeight="300" d:DesignWidth="500" Initialized="UserControl_Initialized">
+             d:DesignHeight="300" d:DesignWidth="500" Loaded="UserControl_Loaded">
 
-    <Expander>
+    <Expander Visibility="{Binding Display}" IsEnabled="{Binding Enabled}">
         <Expander.Resources>
             <Style TargetType="Border" x:Key="TagBorder">
                 <Setter Property="BorderThickness" Value="2" />
@@ -18,7 +18,7 @@
 
         <Expander.Header>
             <Grid>
-                <Label Content="MAL" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
+                <Label Content="MyAnimeList" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
                 <ItemsControl HorizontalAlignment="Right" Grid.RowSpan="2">
                     <Border Style="{StaticResource TagBorder}" Background="White">
                         <Label Content="{Binding SearchItemsCountString, FallbackValue=Error}" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -42,11 +42,6 @@
                             <Expander.Header>
                                 <Grid>
                                     <Label Content="{Binding title}" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
-                                    <ItemsControl HorizontalAlignment="Right" Grid.RowSpan="2">
-                                        <Border Style="{StaticResource TagBorder}" Background="White">
-                                            <Label Content="X Results" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                        </Border>
-                                    </ItemsControl>
                                 </Grid>
                             </Expander.Header>
                         </Expander>

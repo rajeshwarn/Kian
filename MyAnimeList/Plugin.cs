@@ -42,7 +42,8 @@ namespace MyAnimeList
 
         public void OnSearch(string searchString)
         {
-            wpf.OnSearch(searchString);
+            if (wpf.Authenticated)
+                wpf.OnSearch(searchString);
         }
 
         public void OnStart()
