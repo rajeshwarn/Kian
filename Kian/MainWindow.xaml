@@ -47,9 +47,9 @@
                             </TextBox.InputBindings>
                         </TextBox>
                     </Grid>
-
-                    <StackPanel Grid.Row="2" x:Name="pluginExpanderStackPanel">
-                    </StackPanel>
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel x:Name="pluginExpanderStackPanel" />
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

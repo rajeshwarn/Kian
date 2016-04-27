@@ -7,17 +7,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MyAnimeList
 {
@@ -39,8 +31,8 @@ namespace MyAnimeList
             InitializeComponent();
         }
 
-        private NetworkCredential _malLogin;// = new NetworkCredential("username", "password"); // For debugging only, remove real data when committing. (FILTER)
-        private List<animeEntry> _searchItems;
+        private NetworkCredential _malLogin = new NetworkCredential("foo", "bar"); // For debugging only, remove real data when committing. (FILTER)
+        private List<animeEntry> _searchItems = new List<animeEntry>();
         private Visibility _display = Visibility.Collapsed;
         private string _searchItemsCountString = "Ready!";
         private bool _searching = false;
@@ -101,18 +93,6 @@ namespace MyAnimeList
         {
             get
             {
-                if (_searchItems == null)
-                {
-                    _searchItems = new List<animeEntry>() {
-                        new animeEntry
-                        {
-                            title       = "Sabagebu!",
-                            synopsis    = "Synopsis",
-                            score       = "Score"
-                        }
-                    };
-                }
-
                 return _searchItems;
             }
             set
@@ -202,7 +182,13 @@ namespace MyAnimeList
 
         private async void UserControl_Loaded(object sender, EventArgs e)
         {
-            await Authenticate();
+            if (_malLogin != null)
+                Authenticated = true;
+            else
+            {
+                Authenticated = false;
+                await Authenticate();
+            }
         }
 
         private async Task<bool> Authenticate()

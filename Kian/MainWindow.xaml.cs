@@ -1,10 +1,6 @@
 ﻿using Kian.Core;
 using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Net;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 

@@ -27,7 +27,7 @@
             </Grid>
         </Expander.Header>
 
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid>
             <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems, FallbackValue=Error}" Background="White">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -44,11 +44,38 @@
                                     <Label Content="{Binding title}" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
                                 </Grid>
                             </Expander.Header>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Image MaxHeight="225" MaxWidth="200"  Source="{Binding image, FallbackValue='https://placeholdit.imgix.net/~text?txtsize=33&amp;txt=Loading...&amp;w=200&amp;h=300'}" HorizontalAlignment="Left" />
+                                <StackPanel Grid.Column="1">
+                                    <Label Grid.Column="1" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding title, FallbackValue='Loading...'}" />
+                                    <Label Grid.Column="1" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding english, FallbackValue='Loading...'}">
+                                        <Label.Style>
+                                            <Style TargetType="{x:Type Label}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding title}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding title}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Label.Style>
+                                    </Label>
+                                    <Label Grid.Column="1" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding synonyms, FallbackValue='Loading...'}" />
+                                    <Label Grid.Column="1" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding episodes, FallbackValue='Loading...'}" />
+                                    <TextBlock Grid.Column="1" Margin="5" TextWrapping="Wrap" Text="{Binding synopsis, FallbackValue='' }" />
+                                </StackPanel>
+                            </Grid>
                         </Expander>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Grid Height="15" />
-        </StackPanel>
+        </Grid>
     </Expander>
 </UserControl>
