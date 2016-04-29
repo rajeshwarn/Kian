@@ -11,7 +11,7 @@ namespace MyAnimeList.API
                 using (WebClient client = new WebClient())
                 {
                     client.Credentials = loginCredentials;
-                    client.DownloadString("http://myanimelist.net/api/account/verify_credentials.xml");
+                    client.DownloadString("http://myanimelist.net/api/account/verifycredentials.xml");
                 }
 
                 return true;

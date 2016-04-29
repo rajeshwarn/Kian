@@ -1,6 +1,6 @@
-﻿namespace Kian
+﻿namespace Kian.Core
 {
-    internal class HelperFunctions
+    public class HelperFunctions
     {
         // Credit goes to http://stackoverflow.com/a/11124118.
         // Returns the human-readable file size for an arbitrary, 64-bit file size
@@ -8,36 +8,36 @@
         public static string GetBytesReadable(long i)
         {
             // Get absolute value
-            long absolute_i = (i < 0 ? -i : i);
+            long absolutei = (i < 0 ? -i : i);
             // Determine the suffix and readable value
             string suffix;
             double readable;
-            if (absolute_i >= 0x1000000000000000) // Exabyte
+            if (absolutei >= 0x1000000000000000) // Exabyte
             {
                 suffix = "EB";
                 readable = (i >> 50);
             }
-            else if (absolute_i >= 0x4000000000000) // Petabyte
+            else if (absolutei >= 0x4000000000000) // Petabyte
             {
                 suffix = "PB";
                 readable = (i >> 40);
             }
-            else if (absolute_i >= 0x10000000000) // Terabyte
+            else if (absolutei >= 0x10000000000) // Terabyte
             {
                 suffix = "TB";
                 readable = (i >> 30);
             }
-            else if (absolute_i >= 0x40000000) // Gigabyte
+            else if (absolutei >= 0x40000000) // Gigabyte
             {
                 suffix = "GB";
                 readable = (i >> 20);
             }
-            else if (absolute_i >= 0x100000) // Megabyte
+            else if (absolutei >= 0x100000) // Megabyte
             {
                 suffix = "MB";
                 readable = (i >> 10);
             }
-            else if (absolute_i >= 0x400) // Kilobyte
+            else if (absolutei >= 0x400) // Kilobyte
             {
                 suffix = "KB";
                 readable = i;

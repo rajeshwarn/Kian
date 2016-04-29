@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 
+/// <summary>
+/// Written by Maximilian Gerhardt (http://stackoverflow.com/users/5296568/maximilian-gerhardt) as an answer here: http://stackoverflow.com/a/32426051
+/// </summary>
 namespace Cloudflare_Evader
 {
     public class CloudflareEvader

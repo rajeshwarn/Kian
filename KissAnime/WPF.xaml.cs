@@ -1,13 +1,8 @@
-﻿using Kian.Core;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
+﻿using Kian.Core.Objects;
+using KissAnime.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -31,24 +26,24 @@ namespace KissAnime
             InitializeComponent();
         }
 
-        //private List<animeEntry> _searchItems = new List<animeEntry>();
-        private Visibility _display = Visibility.Collapsed;
+        private List<Anime> searchItems = new List<Anime>();
+        private Visibility display = Visibility.Visible;
 
-        private string _searchItemsCountString = "Ready!";
-        private bool _searching = false;
-        private bool _enabled = false;
+        private string searchItemsCountString = "Ready!";
+        private bool searching = false;
+        private bool enabled = false;
 
         public bool Searching
         {
             get
             {
-                return _searching;
+                return searching;
             }
             set
             {
-                _searching = value;
+                searching = value;
 
-                if (_searching)
+                if (searching)
                 {
                     Enabled = false;
                     Display = Visibility.Visible;
@@ -66,57 +61,37 @@ namespace KissAnime
         {
             get
             {
-                return _enabled;
+                return enabled;
             }
             set
             {
-                _enabled = value;
+                enabled = value;
                 NotifyPropertyChanged("Enabled");
             }
         }
 
-        public bool Authenticated
+        public List<Anime> SearchItems
         {
             get
             {
-                return _authenticated;
+                return searchItems;
             }
             set
             {
-                _authenticated = value;
-                NotifyPropertyChanged("Authenticated");
-
-                if (value == true)
-                    Display = Visibility.Visible;
-                else
-                    Display = Visibility.Collapsed;
-            }
-        }
-
-        /*
-        public List<animeEntry> SearchItems
-        {
-            get
-            {
-                return _searchItems;
-            }
-            set
-            {
-                _searchItems = value;
+                searchItems = value;
                 NotifyPropertyChanged("SearchItems");
             }
         }
-        */
 
         public Visibility Display
         {
             get
             {
-                return _display;
+                return display;
             }
             set
             {
-                _display = value;
+                display = value;
                 NotifyPropertyChanged("Display");
             }
         }
@@ -125,11 +100,11 @@ namespace KissAnime
         {
             get
             {
-                return _searchItemsCountString;
+                return searchItemsCountString;
             }
             set
             {
-                _searchItemsCountString = value;
+                searchItemsCountString = value;
                 NotifyPropertyChanged("SearchItemsCountString");
             }
         }
@@ -138,18 +113,17 @@ namespace KissAnime
         {
             BackgroundWorker bw = new BackgroundWorker();
 
-            /*
             bw.DoWork += delegate
             {
                 Searching = true;
 
                 SearchItems.Clear();
 
-                anime searchResults = Search.GetResults(searchString, _login);
+                List<Anime> searchResults = API.Search(searchString);
 
-                if (searchResults != null && searchResults.Items != null)
+                if (searchResults != null && searchResults != null)
                 {
-                    SearchItems = searchResults.Items.ToList();
+                    SearchItems = searchResults;
                     Display = Visibility.Visible;
                 }
                 else
@@ -162,36 +136,37 @@ namespace KissAnime
                 else
                     SearchItemsCountString = SearchItems.Count + " Results";
             };
-            */
 
             bw.RunWorkerAsync();
         }
 
-        private void Anime_Expanded(object sender, RoutedEventArgs e)
+        private void downloadEpisode_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            Expander expander = (Expander)sender;
+            MenuItem mnu = sender as MenuItem;
+            ListView lv = ((ContextMenu)mnu.Parent).PlacementTarget as ListView;
 
-            animeEntry entry = (animeEntry)expander.DataContext;
-
-            if (entry == null)
+            foreach (Download dl in lv.SelectedItems)
             {
-                anime searchResults = Search.GetResults(entry.title, _login);
-
-                if (searchResults != null && searchResults.Items.Length > 0)
-                {
-                    entry = searchResults.Items[0];
-                }
-                else
-                {
-                    entry = null;
-                }
+                Console.WriteLine("Downloading {0}: {1}", dl.EpisodeName, dl.DownloadLink);
             }
-            */
         }
 
-        private void UserControl_Loaded(object sender, EventArgs e)
+        private void anime_Expanded(object sender, RoutedEventArgs e)
         {
+            Expander exp = sender as Expander;
+            Anime anime = exp.DataContext as Anime;
+
+            if (anime.DownloadGroups.Count == 0)
+            {
+                BackgroundWorker bw = new BackgroundWorker();
+
+                bw.DoWork += delegate
+                {
+                    anime.DownloadGroups = anime.GetEpisodes();
+                };
+
+                bw.RunWorkerAsync();
+            }
         }
     }
 }

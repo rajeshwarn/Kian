@@ -13,7 +13,7 @@
                       Height="576"
                       Width="1024"
                       MinHeight="576"
-                      MinWidth="1024" Loaded="window_Loaded">
+                      MinWidth="1024" Loaded="windowLoaded">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -40,7 +40,7 @@
                                    Visibility="{Binding ElementName=searchStringBox, Path=Text.IsEmpty, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <TextBox x:Name="searchStringBox" VerticalContentAlignment="Center" TextWrapping="Wrap" Background="Transparent" FontSize="24">
                             <TextBox.CommandBindings>
-                                <CommandBinding Command="Search" Executed="SearchCommandBinding_Executed" />
+                                <CommandBinding Command="Search" Executed="SearchCommandBindingExecuted" />
                             </TextBox.CommandBindings>
                             <TextBox.InputBindings>
                                 <KeyBinding Key="Enter" Command="Search" />

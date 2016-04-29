@@ -33,7 +33,7 @@
         </Expander.ContextMenu>
 
         <Grid>
-            <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems, FallbackValue=Error}" Background="White">
+            <ItemsControl ItemsSource="{Binding SearchItems, FallbackValue=Error}" Background="White">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Expander Expanded="Anime_Expanded">

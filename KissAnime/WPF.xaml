@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:KissAnime"
              mc:Ignorable="d"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             d:DesignHeight="300" d:DesignWidth="500" Loaded="UserControl_Loaded">
+             d:DesignHeight="300" d:DesignWidth="500">
 
     <Expander Visibility="{Binding Display}" IsEnabled="{Binding Enabled}">
         <Expander.Resources>
@@ -28,39 +28,61 @@
         </Expander.Header>
 
         <Grid>
-            <ItemsControl x:Name="searchItems" ItemsSource="{Binding SearchItems, FallbackValue=Error}" Background="White">
+            <ItemsControl ItemsSource="{Binding SearchItems}" Background="White">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Expander Expanded="Anime_Expanded">
-                            <Expander.Resources>
-                                <Style TargetType="Border" x:Key="TagBorder">
-                                    <Setter Property="BorderThickness" Value="2" />
-                                    <Setter Property="CornerRadius" Value="3" />
-                                </Style>
-                            </Expander.Resources>
-
+                        <Expander Name="anime" Expanded="anime_Expanded">
                             <Expander.Header>
                                 <Grid>
-                                    <Label Content="{Binding title}" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" Grid.RowSpan="2" />
+                                    <Label Content="{Binding Title}" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontWeight="Bold" Margin="0,1" />
                                 </Grid>
                             </Expander.Header>
 
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Margin="5,0,0,0">
-                                    <Image MaxHeight="225" MaxWidth="200"  Source="{Binding image, FallbackValue='https://placeholdit.imgix.net/~text?txtsize=33&amp;txt=Loading...&amp;w=200&amp;h=225'}" HorizontalAlignment="Stretch" VerticalAlignment="Top" />
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                        <Label FontSize="16" Content="Episodes: " />
-                                        <Label FontSize="16" Content="{Binding episodes, FallbackValue='Loading...'}" />
-                                    </StackPanel>
-                                </StackPanel>
-                                <StackPanel Margin="5,0,0,0" Grid.Column="1">
-                                    <Label FontSize="16" FontWeight="Bold" Foreground="{DynamicResource AccentColorBrush}" Content="{Binding title, FallbackValue='Loading...'}" />
-                                    <TextBlock Margin="5" TextWrapping="Wrap" Text="{Binding synopsis, FallbackValue='' }" />
-                                </StackPanel>
+                                <Label Content="Loading...">
+                                    <Label.Style>
+                                        <Style TargetType="Label">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DownloadGroups.Count}" Value="0">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+
+                                <ItemsControl ItemsSource="{Binding DownloadGroups}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Expander Header="{Binding GroupName}">
+                                                <ListView ItemsSource="{Binding Downloads}" SelectionMode="Extended" AlternationCount="2">
+                                                    <ListView.ContextMenu>
+                                                        <ContextMenu>
+                                                            <ContextMenu.Items>
+                                                                <MenuItem Name="downloadEpisode" Header="Download" Click="downloadEpisode_Click" />
+                                                            </ContextMenu.Items>
+                                                        </ContextMenu>
+                                                    </ListView.ContextMenu>
+                                                    <ListView.View>
+                                                        <GridView>
+                                                            <GridViewColumn Header="Episode Name" Width="Auto" DisplayMemberBinding="{Binding EpisodeName}" />
+                                                            <GridViewColumn Header="Size" Width="75" DisplayMemberBinding="{Binding FileSize}" />
+                                                            <GridViewColumn Header="Res" Width="50" DisplayMemberBinding="{Binding ResolutionName}" />
+                                                        </GridView>
+                                                    </ListView.View>
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <UniformGrid Rows="1" Background="Transparent">
+                                                                <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
+                                                            </UniformGrid>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>
+                                                </ListView>
+                                            </Expander>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </Grid>
                         </Expander>
                     </DataTemplate>

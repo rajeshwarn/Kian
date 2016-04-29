@@ -7,15 +7,15 @@ namespace KissAnime
     [Export(typeof(IPlugin))]
     public class Plugin : IPlugin
     {
-        private string _name = "KissAnime";
-        private ContentControl _pluginContent;
+        private string name = "KissAnime";
+        private ContentControl pluginContent;
         private WPF wpf;
 
         public string Name
         {
             get
             {
-                return _name;
+                return name;
             }
         }
 
@@ -23,19 +23,18 @@ namespace KissAnime
         {
             get
             {
-                return _pluginContent;
+                return pluginContent;
             }
 
             set
             {
-                _pluginContent = value;
+                pluginContent = value;
             }
         }
 
         public void OnSearch(string searchString)
         {
-            if (wpf.Authenticated)
-                wpf.OnSearch(searchString);
+            wpf.OnSearch(searchString);
         }
 
         public void OnStart()

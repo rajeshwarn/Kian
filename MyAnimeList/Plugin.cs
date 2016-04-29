@@ -7,15 +7,15 @@ namespace MyAnimeList
     [Export(typeof(IPlugin))]
     public class Plugin : IPlugin
     {
-        private string _name = "MyAnimeList";
-        private ContentControl _pluginContent;
+        private string name = "MyAnimeList";
+        private ContentControl pluginContent;
         private WPF wpf;
 
         public string Name
         {
             get
             {
-                return _name;
+                return name;
             }
         }
 
@@ -23,12 +23,12 @@ namespace MyAnimeList
         {
             get
             {
-                return _pluginContent;
+                return pluginContent;
             }
 
             set
             {
-                _pluginContent = value;
+                pluginContent = value;
             }
         }
 

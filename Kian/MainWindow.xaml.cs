@@ -22,14 +22,14 @@ namespace Kian
             plugins = loader.Plugins;
         }
 
-        private void SearchCommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        private void SearchCommandBindingExecuted(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             string searchString = ((TextBox)sender).Text;
             foreach (IPlugin plugin in plugins)
                 plugin.OnSearch(searchString);
         }
 
-        private void window_Loaded(object sender, RoutedEventArgs e)
+        private void windowLoaded(object sender, RoutedEventArgs e)
         {
             LoadPlugins();
 

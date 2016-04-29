@@ -66,9 +66,9 @@ namespace MyAnimeList.Objects.API.Anime
 
         private string statusField;
 
-        private string start_dateField;
+        private string startdateField;
 
-        private string end_dateField;
+        private string enddateField;
 
         private string synopsisField;
 
@@ -220,36 +220,36 @@ namespace MyAnimeList.Objects.API.Anime
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string start_date
+        public string startdate
         {
             get
             {
-                return this.start_dateField;
+                return this.startdateField;
             }
             set
             {
-                if (value != this.start_dateField)
+                if (value != this.startdateField)
                 {
-                    this.start_dateField = value;
-                    RaisePropertyChanged("start_date");
+                    this.startdateField = value;
+                    RaisePropertyChanged("startdate");
                 }
             }
         }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string end_date
+        public string enddate
         {
             get
             {
-                return this.end_dateField;
+                return this.enddateField;
             }
             set
             {
-                if (value != this.end_dateField)
+                if (value != this.enddateField)
                 {
-                    this.end_dateField = value;
-                    RaisePropertyChanged("end_date");
+                    this.enddateField = value;
+                    RaisePropertyChanged("enddate");
                 }
             }
         }

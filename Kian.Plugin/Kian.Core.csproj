@@ -54,8 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crypt.cs" />
+    <Compile Include="DownloadManager.cs" />
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="IPlugin.cs" />
+    <Compile Include="Objects\Download.cs" />
+    <Compile Include="Objects\DownloadGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

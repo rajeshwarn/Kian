@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,26 +32,26 @@ namespace MyAnimeList
             InitializeComponent();
         }
 
-        private NetworkCredential _login;
-        private bool _authenticated = false;
-        private bool _saveLogin = false;
-        private List<animeEntry> _searchItems = new List<animeEntry>();
-        private Visibility _display = Visibility.Collapsed;
-        private string _searchItemsCountString = "Ready!";
-        private bool _searching = false;
-        private bool _enabled = false;
+        private NetworkCredential login;
+        private bool authenticated = false;
+        private bool saveLogin = false;
+        private List<animeEntry> searchItems = new List<animeEntry>();
+        private Visibility display = Visibility.Collapsed;
+        private string searchItemsCountString = "Ready!";
+        private bool searching = false;
+        private bool enabled = false;
 
         public bool Searching
         {
             get
             {
-                return _searching;
+                return searching;
             }
             set
             {
-                _searching = value;
+                searching = value;
 
-                if (_searching)
+                if (searching)
                 {
                     Enabled = false;
                     Display = Visibility.Visible;
@@ -70,11 +69,11 @@ namespace MyAnimeList
         {
             get
             {
-                return _enabled;
+                return enabled;
             }
             set
             {
-                _enabled = value;
+                enabled = value;
                 NotifyPropertyChanged("Enabled");
             }
         }
@@ -83,20 +82,20 @@ namespace MyAnimeList
         {
             get
             {
-                return _authenticated;
+                return authenticated;
             }
             set
             {
-                _authenticated = value;
+                authenticated = value;
                 NotifyPropertyChanged("Authenticated");
 
                 if (value == true)
                 {
                     Display = Visibility.Visible;
-                    if (_saveLogin == true)
+                    if (saveLogin == true)
                     {
-                        Properties.Settings.Default.Username = _login.UserName;
-                        Properties.Settings.Default.Password = Crypt.EncryptString(_login.SecurePassword);
+                        Properties.Settings.Default.Username = login.UserName;
+                        Properties.Settings.Default.Password = Crypt.EncryptString(login.SecurePassword);
                         Properties.Settings.Default.Save();
                     }
                 }
@@ -115,11 +114,11 @@ namespace MyAnimeList
         {
             get
             {
-                return _searchItems;
+                return searchItems;
             }
             set
             {
-                _searchItems = value;
+                searchItems = value;
                 NotifyPropertyChanged("SearchItems");
             }
         }
@@ -128,11 +127,11 @@ namespace MyAnimeList
         {
             get
             {
-                return _display;
+                return display;
             }
             set
             {
-                _display = value;
+                display = value;
                 NotifyPropertyChanged("Display");
             }
         }
@@ -141,11 +140,11 @@ namespace MyAnimeList
         {
             get
             {
-                return _searchItemsCountString;
+                return searchItemsCountString;
             }
             set
             {
-                _searchItemsCountString = value;
+                searchItemsCountString = value;
                 NotifyPropertyChanged("SearchItemsCountString");
             }
         }
@@ -160,7 +159,7 @@ namespace MyAnimeList
 
                 SearchItems.Clear();
 
-                anime searchResults = Search.GetResults(searchString, _login);
+                anime searchResults = Search.GetResults(searchString, login);
 
                 if (searchResults != null && searchResults.Items != null)
                 {
@@ -189,7 +188,7 @@ namespace MyAnimeList
 
             if (entry == null)
             {
-                anime searchResults = Search.GetResults(entry.title, _login);
+                anime searchResults = Search.GetResults(entry.title, login);
 
                 if (searchResults != null && searchResults.Items.Length > 0)
                 {
@@ -204,14 +203,19 @@ namespace MyAnimeList
 
         private async void UserControl_Loaded(object sender, EventArgs e)
         {
-            _login = new NetworkCredential(Properties.Settings.Default.Username, Crypt.DecryptString(Properties.Settings.Default.Password));
-            if (API.Authentication.VerifyCredentials(_login))
+            login = new NetworkCredential(Properties.Settings.Default.Username, Crypt.DecryptString(Properties.Settings.Default.Password));
+            if (API.Authentication.VerifyCredentials(login))
                 Authenticated = true;
             else
             {
                 Authenticated = false;
                 await Authenticate();
             }
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            Authenticated = false;
         }
 
         private async Task<bool> Authenticate()
@@ -235,9 +239,9 @@ namespace MyAnimeList
                 return false;
             }
             else if (approveLogin == MessageDialogResult.Affirmative)
-                _saveLogin = true;
+                saveLogin = true;
             else if (approveLogin == MessageDialogResult.FirstAuxiliary)
-                _saveLogin = false;
+                saveLogin = false;
 
             LoginDialogData login = await mainWindow.ShowLoginAsync("Enter your MAL login:", "By logging in, your password will be encrypted using DPAPI and saved until next time.");
             NetworkCredential loginCredentials = new NetworkCredential(login.Username, login.Password);
@@ -246,7 +250,7 @@ namespace MyAnimeList
                 !string.IsNullOrEmpty(loginCredentials.Password) &&
                 API.Authentication.VerifyCredentials(loginCredentials))
             {
-                _login = loginCredentials;
+                this.login = loginCredentials;
                 Authenticated = true;
                 return true;
             }
@@ -272,11 +276,6 @@ namespace MyAnimeList
                     return false;
                 }
             }
-        }
-
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            Authenticated = false;
         }
     }
 }
