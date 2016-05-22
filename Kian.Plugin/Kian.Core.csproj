@@ -58,7 +58,10 @@
     <Compile Include="HelperFunctions.cs" />
     <Compile Include="IPlugin.cs" />
     <Compile Include="Objects\Download.cs" />
-    <Compile Include="Objects\DownloadGroup.cs" />
+    <Compile Include="Objects\DownloadStatus.cs" />
+    <Compile Include="Objects\DownloadStatusChangedEventHandler.cs" />
+    <Compile Include="Objects\Episode.cs" />
+    <Compile Include="ObservableCollectionEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

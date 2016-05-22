@@ -1,7 +1,6 @@
 ﻿using CsQuery;
 using Kian.Core.Objects;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -38,9 +37,9 @@ namespace KissAnime.Objects
         private string title;
 
         /// <summary>
-        /// The download groups.
+        /// The download episodes.
         /// </summary>
-        private ObservableCollection<DownloadGroup> downloadGroups = new ObservableCollection<DownloadGroup>();
+        private ObservableCollection<Episode> episodes = new ObservableCollection<Episode>();
 
         /// <summary>
         /// Gets or sets the title.
@@ -60,19 +59,19 @@ namespace KissAnime.Objects
         }
 
         /// <summary>
-        /// Gets or sets the download groups.
+        /// Gets or sets the download episodes.
         /// </summary>
         /// <value>
-        /// The download groups.
+        /// The download episodes.
         /// </value>
-        public ObservableCollection<DownloadGroup> DownloadGroups
+        public ObservableCollection<Episode> Episodes
         {
-            get { return downloadGroups; }
+            get { return episodes; }
             set
             {
-                if (downloadGroups == value) return;
-                downloadGroups = value;
-                NotifyPropertyChanged("DownloadGroups");
+                if (episodes == value) return;
+                episodes = value;
+                NotifyPropertyChanged("Episodes");
             }
         }
 
@@ -86,22 +85,10 @@ namespace KissAnime.Objects
         /// Gets the current series' episodes.
         /// </summary>
         /// <returns>All episodes found</returns>
-        public ObservableCollection<DownloadGroup> GetEpisodes()
+        public ObservableCollection<Episode> GetEpisodes()
         {
-            // Collection of downloadgroups to separate downloads based on video resolution
-            ObservableCollection<DownloadGroup> downloadGroups = new ObservableCollection<DownloadGroup>();
-
-            // Dictionary <resolution, group> to avoid creating multiple downloadGroups for each resolution
-            Dictionary<int, DownloadGroup> dlg = new Dictionary<int, DownloadGroup>();
-
-            // DownloadGroup containing the highest-res episodes
-            // Create and add this here to keep it on top of the other groups
-            DownloadGroup highest = new DownloadGroup { GroupName = "Highest" };
-            downloadGroups.Add(highest);
-
-            // DownloadGroup containing the lowest-res episodes
-            // Create here to be able to add downloads to it, but don't add it to the list of groups as that would place it on top of the other groups
-            DownloadGroup lowest = new DownloadGroup { GroupName = "Lowest" };
+            // Collection of Episodes to separate downloads based on video resolution
+            ObservableCollection<Episode> episodes = new ObservableCollection<Episode>();
 
             // Using a cloudflare-authorized webclient from API
             using (WebClient localClient = API.GetWebClient())
@@ -112,42 +99,19 @@ namespace KissAnime.Objects
                     // Get its name and strip "\n" and 39 spaces from the name of it. (For some reason, someone found it esier to add that at the beginning of each name instead of using CSS to format their webpage)
                     string episodeName = episodeDomObject.InnerText.Substring(41);
 
-                    // Keep the min-res and max-res download stored here to be able to add them to their respective collections later
-                    Download maxResEpisode = null;
-                    Download minResEpisode = null;
+                    // Get its url to be able to load download info from it later
+                    string episodeUrl = new Uri(API.BaseUri, episodeDomObject.Attributes["Href"]).AbsoluteUri;
 
-                    // For each download for an episode
-                    foreach (Download dl in API.GetDownloads(localClient, new Uri(API.BaseUri, episodeDomObject.Attributes["Href"]).AbsoluteUri, episodeName))
+                    episodes.Add(new Episode
                     {
-                        // If it's resolution doesn't already have a group, create one for it
-                        if (!dlg.ContainsKey(dl.Resolution))
-                            dlg.Add(dl.Resolution, new DownloadGroup { GroupName = dl.ResolutionName });
-
-                        // Add the download to the group containing episodes with the same resolution
-                        dlg[dl.Resolution].Downloads.Add(dl);
-
-                        // Find the highest/lowest resolution download and keep them
-                        if (maxResEpisode == null || dl.Resolution > maxResEpisode.Resolution)
-                            maxResEpisode = dl;
-                        else if (minResEpisode == null || dl.Resolution < minResEpisode.Resolution)
-                            minResEpisode = dl;
-                    }
-
-                    // Add the highest/lowest resolution download to their respective list
-                    highest.Downloads.Add(maxResEpisode);
-                    lowest.Downloads.Add(minResEpisode);
+                        EpisodeName = episodeName,
+                        EpisodeUrl = episodeUrl
+                    });
                 }
-
-                // Add all groups to the list of groups
-                foreach (KeyValuePair<int, DownloadGroup> kvp in dlg)
-                    downloadGroups.Add(kvp.Value);
-
-                // Add this group here to keep it below the other groups
-                downloadGroups.Add(lowest);
             }
 
-            // Return all groups
-            return downloadGroups;
+            // Return all episodes
+            return episodes;
         }
     }
 }

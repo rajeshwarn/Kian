@@ -2,17 +2,13 @@
 using CsQuery;
 using Kian.Core.Objects;
 using KissAnime.Objects;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace KissAnime
 {
@@ -31,12 +27,23 @@ namespace KissAnime
                 while (client == null)
                 {
                     Console.WriteLine("Trying to bypass Cloudflare...");
-                    WebClient localClient = CloudflareEvader.CreateBypassedWebClient(BaseUri.AbsoluteUri);
+                    WebClient localClient = null;
 
-                    if (localClient != null)
-                        defaultHeaders = localClient.Headers;
+                    try
+                    {
+                        localClient = CloudflareEvader.CreateBypassedWebClient(BaseUri.AbsoluteUri);
 
-                    client = localClient;
+                        if (localClient != null)
+                            defaultHeaders = localClient.Headers;
+
+                        client = localClient;
+                    }
+                    catch (WebException ex)
+                    {
+                        Trace.TraceError("Could not get BypassedWebClient from CloudflareEvader. (Error: {0})", ex.Message);
+
+                        return null;
+                    }
                 }
 
                 return client;
@@ -48,7 +55,6 @@ namespace KissAnime
         public static WebClient GetWebClient()
         {
             WebClientEx localClient = new WebClientEx(((WebClientEx)Client).CookieContainer);
-            localClient.Headers = CloneHeaders(defaultHeaders);
             return localClient;
         }
 
@@ -93,9 +99,9 @@ namespace KissAnime
             }
         }
 
-        public static List<Download> GetDownloads(WebClient client, string url, string name)
+        public static List<AnimeDownload> GetDownloads(WebClient client, string url, string name)
         {
-            List<Download> downloads = new List<Download>();
+            List<AnimeDownload> downloads = new List<AnimeDownload>();
             string episode;
 
             using (WebClient localClient = GetWebClient())
@@ -104,6 +110,7 @@ namespace KissAnime
                 episode = client.DownloadString(url);
 
                 // Check if we were detected and attacked by an evil captcha. If we are, we can't continue :(
+                // TODO: Notify user if KissAnime throws a captcha at us
                 if (episode.Contains("AreYouHuman"))
                     return null;
             }
@@ -114,9 +121,9 @@ namespace KissAnime
 
                 foreach (IDomObject quality in episodeQc["#selectQuality > option"].ToList())
                 {
-                    downloads.Add(new Download
+                    downloads.Add(new AnimeDownload
                     {
-                        EpisodeName = name,
+                        Title = name,
                         DownloadLink = Encoding.UTF8.GetString(Convert.FromBase64String(quality.Attributes["value"])),
                         Resolution = int.Parse(new Regex(@"[0-9]+").Match(quality.InnerText).Value),
                         SizeRequestReferrer = "http://www.animebam.net/",

@@ -3,24 +3,26 @@ using System.ComponentModel;
 
 namespace Kian.Core.Objects
 {
-    public class DownloadGroup : INotifyPropertyChanged
+    public class Episode : INotifyPropertyChanged
     {
-        private string groupName;
-        private ObservableCollection<Download> downloads = new ObservableCollection<Download>();
+        private string episodeName;
+        private ObservableCollection<Download> downloads;
 
-        public string GroupName
+        public string EpisodeName
         {
             get
             {
-                return groupName;
+                return episodeName;
             }
             set
             {
-                if (groupName == value) return;
-                groupName = value;
-                NotifyPropertyChanged("GroupName");
+                if (episodeName == value) return;
+                episodeName = value;
+                NotifyPropertyChanged("EpisodeName");
             }
         }
+
+        private string episodeUrl;
 
         public ObservableCollection<Download> Downloads
         {
@@ -33,6 +35,21 @@ namespace Kian.Core.Objects
                 if (downloads == value) return;
                 downloads = value;
                 NotifyPropertyChanged("Downloads");
+            }
+        }
+
+        public string EpisodeUrl
+        {
+            get
+            {
+                return episodeUrl;
+            }
+
+            set
+            {
+                if (episodeUrl == value) return;
+                episodeUrl = value;
+                NotifyPropertyChanged("EpisodeUrl");
             }
         }
 

@@ -44,7 +44,7 @@
                                         <Style TargetType="Label">
                                             <Setter Property="Visibility" Value="Collapsed" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding DownloadGroups.Count}" Value="0">
+                                                <DataTrigger Binding="{Binding Episodes.Count}" Value="0">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -52,37 +52,27 @@
                                     </Label.Style>
                                 </Label>
 
-                                <ItemsControl ItemsSource="{Binding DownloadGroups}">
-                                    <ItemsControl.ItemTemplate>
+                                <ListView ItemsSource="{Binding Episodes}" SelectionMode="Extended" AlternationCount="2">
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <ContextMenu.Items>
+                                                <MenuItem Name="downloadEpisode" Header="Download" Click="downloadEpisode_Click" />
+                                            </ContextMenu.Items>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Episode Name" Width="Auto" DisplayMemberBinding="{Binding EpisodeName}" />
+                                        </GridView>
+                                    </ListView.View>
+                                    <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Expander Header="{Binding GroupName}">
-                                                <ListView ItemsSource="{Binding Downloads}" SelectionMode="Extended" AlternationCount="2">
-                                                    <ListView.ContextMenu>
-                                                        <ContextMenu>
-                                                            <ContextMenu.Items>
-                                                                <MenuItem Name="downloadEpisode" Header="Download" Click="downloadEpisode_Click" />
-                                                            </ContextMenu.Items>
-                                                        </ContextMenu>
-                                                    </ListView.ContextMenu>
-                                                    <ListView.View>
-                                                        <GridView>
-                                                            <GridViewColumn Header="Episode Name" Width="Auto" DisplayMemberBinding="{Binding EpisodeName}" />
-                                                            <GridViewColumn Header="Size" Width="75" DisplayMemberBinding="{Binding FileSize}" />
-                                                            <GridViewColumn Header="Res" Width="50" DisplayMemberBinding="{Binding ResolutionName}" />
-                                                        </GridView>
-                                                    </ListView.View>
-                                                    <ListView.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <UniformGrid Rows="1" Background="Transparent">
-                                                                <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
-                                                            </UniformGrid>
-                                                        </DataTemplate>
-                                                    </ListView.ItemTemplate>
-                                                </ListView>
-                                            </Expander>
+                                            <UniformGrid Rows="1" Background="Transparent">
+                                                <CheckBox IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
+                                            </UniformGrid>
                                         </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                    </ListView.ItemTemplate>
+                                </ListView>
                             </Grid>
                         </Expander>
                     </DataTemplate>

@@ -37,6 +37,9 @@ namespace Cloudflare_Evader
             }
             catch (WebException ex) //We usually get this because of a 503 service not available.
             {
+                if (ex.Response == null)
+                    throw ex;
+
                 string html = "";
                 using (var reader = new StreamReader(ex.Response.GetResponseStream()))
                     html = reader.ReadToEnd();

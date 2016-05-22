@@ -1,8 +1,10 @@
-﻿using Kian.Core.Objects;
+﻿using Kian.Core;
+using Kian.Core.Objects;
 using KissAnime.Objects;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -145,9 +147,16 @@ namespace KissAnime
             MenuItem mnu = sender as MenuItem;
             ListView lv = ((ContextMenu)mnu.Parent).PlacementTarget as ListView;
 
-            foreach (Download dl in lv.SelectedItems)
+            List<Episode> episodes = lv.SelectedItems.OfType<Episode>().ToList();
+            episodes.Reverse();
+
+            foreach (Episode episode in episodes)
             {
-                Console.WriteLine("Downloading {0}: {1}", dl.EpisodeName, dl.DownloadLink);
+                AnimeDownload dl = new AnimeDownload();
+                dl.Title = episode.EpisodeName;
+                dl.Episode = episode;
+
+                DownloadManager.AddDownload(dl);
             }
         }
 
@@ -156,13 +165,13 @@ namespace KissAnime
             Expander exp = sender as Expander;
             Anime anime = exp.DataContext as Anime;
 
-            if (anime.DownloadGroups.Count == 0)
+            if (anime.Episodes.Count == 0)
             {
                 BackgroundWorker bw = new BackgroundWorker();
 
                 bw.DoWork += delegate
                 {
-                    anime.DownloadGroups = anime.GetEpisodes();
+                    anime.Episodes = anime.GetEpisodes();
                 };
 
                 bw.RunWorkerAsync();
