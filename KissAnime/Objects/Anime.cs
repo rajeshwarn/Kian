@@ -77,7 +77,7 @@ namespace KissAnime.Objects
 
         /// <summary>
         /// Qc object containing the source of the episodes page.
-        /// Used to keep the episodes page and not load it util needed to prevent looong search time.
+        /// Used to keep the episodes page and not load it until needed to prevent long search time.
         /// </summary>
         public CQ EpisodesCq;
 

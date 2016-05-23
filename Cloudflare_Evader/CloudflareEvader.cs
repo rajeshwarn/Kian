@@ -38,7 +38,7 @@ namespace Cloudflare_Evader
             catch (WebException ex) //We usually get this because of a 503 service not available.
             {
                 if (ex.Response == null)
-                    throw ex;
+                    throw;
 
                 string html = "";
                 using (var reader = new StreamReader(ex.Response.GetResponseStream()))
@@ -225,8 +225,7 @@ namespace Cloudflare_Evader
         }
     }
 
-    /*Credit goes to  https://stackoverflow.com/questions/1777221/using-cookiecontainer-with-webclient-class
- (user https://stackoverflow.com/users/129124/pavel-savara) */
+    // Credit goes to  https://stackoverflow.com/questions/1777221/using-cookiecontainer-with-webclient-class (user https://stackoverflow.com/users/129124/pavel-savara)
 
     public class WebClientEx : WebClient
     {

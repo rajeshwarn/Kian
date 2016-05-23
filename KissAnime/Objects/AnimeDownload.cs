@@ -4,14 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KissAnime.Objects
 {
-    internal class AnimeDownload : Download, INotifyPropertyChanged
+    internal class AnimeDownload : Download, INotifyPropertyChanged, IDisposable
     {
         private string downloadLink;
         private int downloadProgress;
@@ -24,6 +22,8 @@ namespace KissAnime.Objects
         private string title;
 
         public event DownloadStatusChangedEventHandler DownloadStatusChanged = delegate { };
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string DownloadLink
         {
@@ -51,6 +51,7 @@ namespace KissAnime.Objects
             {
                 if (episode == value) return;
                 episode = value;
+
                 NotifyPropertyChanged("Episode");
             }
         }
@@ -145,7 +146,7 @@ namespace KissAnime.Objects
                 if (status == value) return;
                 DownloadStatus oldStatus = status;
                 status = value;
-                DownloadStatusChanged(this, oldStatus, value);
+                DownloadStatusChanged(this, new DownloadStatusChangedEventData(oldStatus, value));
                 NotifyPropertyChanged("Status");
             }
         }
@@ -161,29 +162,108 @@ namespace KissAnime.Objects
             }
         }
 
+        private WebClient downloadingClient;
+
+        private AnimeDownload GetDownload(Episode ep)
+        {
+            List<AnimeDownload> dlList = API.GetDownloads(ep.EpisodeUrl, ep.EpisodeName);
+
+            AnimeDownload maxDl = new AnimeDownload();
+            int maxResolution = 0;
+
+            foreach (AnimeDownload dl in dlList)
+            {
+                int res = dl.Resolution;
+                if (res > maxResolution)
+                {
+                    maxResolution = res;
+                    maxDl = dl;
+                }
+            }
+
+            return maxDl;
+        }
+
         public bool Start()
         {
-            Trace.TraceInformation("Started downloading {0} ({1})", FileName, Title);
+            AnimeDownload dl = GetDownload(Episode);
+
+            DownloadLink = dl.DownloadLink;
+            Resolution = dl.Resolution;
+
+            // This is a really shitty solution, but so far it has worked as all files I have encountered so far has been mp4.
+            // There is probably a way better solution to this, but I have time issues as it is :(
+            // I tried to get the file extension by usual means, but sometimes the URL contained a '.' and no file extension,
+            // which resulted in 25+ character long, invalid, file extensions.
+            // TODO: Find the real extension through the first hex-bytes.
+            string extension = ".mp4";
+            
+
+            FileName = DownloadManager.GenerateFilePath(this) + extension;
+
+            downloadingClient = new WebClient();
+            downloadingClient.Headers.Add("Referer", "http://www.animebam.net/");
+            downloadingClient.DownloadProgressChanged += DownloadProgressChanged;
+            downloadingClient.DownloadFileCompleted += DownloadFileCompleted;
+
+            downloadingClient.DownloadFileAsync(new Uri(DownloadLink), Path.Combine(DownloadManager.DownloadFolder, FileName));
+
             Status = DownloadStatus.Downloading;
-            ////throw new NotImplementedException();
+            Trace.TraceInformation("Started downloading {0} ({1})", FileName, Title);
             return true;
         }
 
         public bool Stop()
         {
-            Trace.TraceInformation("Stopped downloading {0} ({1})", FileName, Title);
+            if (downloadingClient != null)
+            {
+                downloadingClient.CancelAsync();
+                downloadingClient.Dispose();
+            }
+
             Status = DownloadStatus.Cancelled;
-            ////throw new NotImplementedException();
+            Trace.TraceInformation("Stopped downloading {0} ({1})", FileName, Title);
             return true;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                Status = DownloadStatus.Cancelled;
+                File.Delete(FileName);
+            }
+            else
+            {
+                Status = DownloadStatus.Successful;
+            }
+
+            downloadProgress = 100;
+            NotifyPropertyChanged("DownloadProgress");
+        }
+
+        private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            if (downloadProgress != e.ProgressPercentage)
+            {
+                downloadProgress = e.ProgressPercentage;
+                NotifyPropertyChanged("DownloadProgress");
+            }
+        }
 
         private void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public void Dispose()
+        {
+            if (downloadingClient != null)
+            {
+                downloadingClient.Dispose();
             }
         }
     }

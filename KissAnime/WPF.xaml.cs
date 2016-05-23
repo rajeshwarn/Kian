@@ -4,7 +4,6 @@ using KissAnime.Objects;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 

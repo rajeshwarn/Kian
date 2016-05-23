@@ -28,3 +28,4 @@ C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\ob
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\WPF.baml
 C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\MyAnimeList\obj\Debug\MyAnimeList.g.resources
 C:\Users\William\Documents\# GitHub #\Kian\Kian\bin\Debug\Plugins\MyAnimeList.dll.config
+C:\Users\bookw\OneDrive\Dokument\Visual Studio 2015\Projects\Kian\Kian\bin\Debug\Plugins\MyAnimeList.dll.config

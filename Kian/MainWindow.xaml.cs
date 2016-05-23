@@ -11,20 +11,59 @@ using System.Windows.Data;
 
 namespace Kian
 {
+    /// <summary>
+    /// The main window.
+    /// </summary>
+    /// <seealso cref="MahApps.Metro.Controls.MetroWindow" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class MainWindow : MetroWindow
     {
-        private IEnumerable<IPlugin> plugins;
         private PluginManager<IPlugin> loader = new PluginManager<IPlugin>("Plugins");
-
+        private IEnumerable<IPlugin> plugins;
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void cancelDownload_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mnu = sender as MenuItem;
+            ListView lv = ((ContextMenu)mnu.Parent).PlacementTarget as ListView;
+
+            List<Download> downloads = lv.SelectedItems.OfType<Download>().ToList();
+
+            foreach (Download dl in downloads)
+            {
+                if (dl.Status == DownloadStatus.Downloading ||
+                    dl.Status == DownloadStatus.Queue)
+                {
+                    dl.Stop();
+                }
+            }
         }
 
         private void LoadPlugins()
         {
             PluginManager<IPlugin> loader = new PluginManager<IPlugin>("Plugins");
             plugins = loader.Plugins;
+        }
+
+        private void removeDownload_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mnu = sender as MenuItem;
+            ListView lv = ((ContextMenu)mnu.Parent).PlacementTarget as ListView;
+
+            List<Download> downloads = lv.SelectedItems.OfType<Download>().ToList();
+
+            foreach (Download dl in downloads)
+            {
+                if (dl.Status == DownloadStatus.Downloading ||
+                    dl.Status == DownloadStatus.Queue)
+                {
+                    dl.Stop();
+                }
+                DownloadManager.RemoveDownload(dl);
+            }
         }
 
         private void SearchCommandBindingExecuted(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
@@ -39,6 +78,14 @@ namespace Kian
                 {
                     Trace.TraceError("Plugin '{0}' crashed on search. (Error: {1})", plugin.Name, ex.Message);
                 }
+        }
+
+        private void windowClosed(object sender, EventArgs e)
+        {
+            foreach (Download dl in DownloadManager.Downloads)
+            {
+                dl.Stop();
+            }
         }
 
         private void windowLoaded(object sender, RoutedEventArgs e)
@@ -69,41 +116,6 @@ namespace Kian
             public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
                 throw new NotImplementedException("This converter only works for one way binding");
-            }
-        }
-
-        private void cancelDownload_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mnu = sender as MenuItem;
-            ListView lv = ((ContextMenu)mnu.Parent).PlacementTarget as ListView;
-
-            List<Download> downloads = lv.SelectedItems.OfType<Download>().ToList();
-
-            foreach (Download dl in downloads)
-            {
-                if (dl.Status == DownloadStatus.Downloading ||
-                    dl.Status == DownloadStatus.Queue)
-                {
-                    dl.Stop();
-                }
-            }
-        }
-
-        private void removeDownload_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mnu = sender as MenuItem;
-            ListView lv = ((ContextMenu)mnu.Parent).PlacementTarget as ListView;
-
-            List<Download> downloads = lv.SelectedItems.OfType<Download>().ToList();
-
-            foreach (Download dl in downloads)
-            {
-                if (dl.Status == DownloadStatus.Downloading ||
-                    dl.Status == DownloadStatus.Queue)
-                {
-                    dl.Stop();
-                }
-                DownloadManager.RemoveDownload(dl);
             }
         }
     }

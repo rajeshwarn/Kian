@@ -5,24 +5,11 @@ namespace Kian.Core.Objects
 {
     public class Episode : INotifyPropertyChanged
     {
-        private string episodeName;
         private ObservableCollection<Download> downloads;
-
-        public string EpisodeName
-        {
-            get
-            {
-                return episodeName;
-            }
-            set
-            {
-                if (episodeName == value) return;
-                episodeName = value;
-                NotifyPropertyChanged("EpisodeName");
-            }
-        }
-
+        private string episodeName;
         private string episodeUrl;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ObservableCollection<Download> Downloads
         {
@@ -35,6 +22,20 @@ namespace Kian.Core.Objects
                 if (downloads == value) return;
                 downloads = value;
                 NotifyPropertyChanged("Downloads");
+            }
+        }
+
+        public string EpisodeName
+        {
+            get
+            {
+                return episodeName;
+            }
+            set
+            {
+                if (episodeName == value) return;
+                episodeName = value;
+                NotifyPropertyChanged("EpisodeName");
             }
         }
 
@@ -52,8 +53,6 @@ namespace Kian.Core.Objects
                 NotifyPropertyChanged("EpisodeUrl");
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged(string propertyName)
         {

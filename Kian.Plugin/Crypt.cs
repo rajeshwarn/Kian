@@ -7,7 +7,7 @@ namespace Kian.Core
     {
         private static byte[] entropy = System.Text.Encoding.Unicode.GetBytes("Using dotPeek/Reflector to find this isn't fair :(");
 
-        public static string EncryptString(System.Security.SecureString input)
+        public static string EncryptString(SecureString input)
         {
             byte[] encryptedData = System.Security.Cryptography.ProtectedData.Protect(
                 System.Text.Encoding.Unicode.GetBytes(ToInsecureString(input)),

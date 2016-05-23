@@ -1,6 +1,5 @@
 ﻿using Cloudflare_Evader;
 using CsQuery;
-using Kian.Core.Objects;
 using KissAnime.Objects;
 using System;
 using System.Collections.Generic;
@@ -16,9 +15,10 @@ namespace KissAnime
     {
         private static WebClient client = null;
 
+        private static WebHeaderCollection defaultHeaders;
         public static Uri BaseUri { get; set; } = new Uri("https://kissanime.to/");
-        public static string SearchUrl { get; set; } = "https://kissanime.to/AdvanceSearch";
         public static string PostDataTemplate { get; set; } = @"animeName={0}&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&genres=0&status=";
+        public static string SearchUrl { get; set; } = "https://kissanime.to/AdvanceSearch";
 
         private static WebClient Client
         {
@@ -50,7 +50,49 @@ namespace KissAnime
             }
         }
 
-        private static WebHeaderCollection defaultHeaders;
+        public static WebHeaderCollection CloneHeaders(WebHeaderCollection headerCollection)
+        {
+            WebHeaderCollection newHeaderCollection = new WebHeaderCollection();
+
+            foreach (string key in headerCollection.AllKeys)
+                newHeaderCollection.Add(key, headerCollection[key]);
+
+            return newHeaderCollection;
+        }
+
+        public static List<AnimeDownload> GetDownloads(string url, string name)
+        {
+            List<AnimeDownload> downloads = new List<AnimeDownload>();
+            string episode;
+
+            using (WebClient localClient = GetWebClient())
+            {
+                localClient.Headers = CloneHeaders(defaultHeaders);
+                episode = localClient.DownloadString(url);
+
+                // Check if we were detected and attacked by an evil captcha. If we are, we can't continue :(
+                // TODO: Notify user if KissAnime throws a captcha at us. (Low priority, it hasn't done that since implementing anti-bot-finding things like "it's a bad idea to request 347 different URL's at the same time.")
+                if (episode.Contains("AreYouHuman"))
+                    return null;
+            }
+
+            if (!string.IsNullOrEmpty(episode))
+            {
+                CQ episodeQc = new CQ(episode);
+
+                foreach (IDomObject quality in episodeQc["#selectQuality > option"].ToList())
+                {
+                    downloads.Add(new AnimeDownload
+                    {
+                        Title = name,
+                        DownloadLink = Encoding.UTF8.GetString(Convert.FromBase64String(quality.Attributes["value"])),
+                        Resolution = int.Parse(new Regex(@"[0-9]+").Match(quality.InnerText).Value),
+                        SizeRequestReferrer = "http://www.animebam.net/",
+                    });
+                }
+            }
+            return downloads;
+        }
 
         public static WebClient GetWebClient()
         {
@@ -63,11 +105,15 @@ namespace KissAnime
             using (WebClient localClient = GetWebClient())
             {
                 List<Anime> searchResults = new List<Anime>();
+                string search;
 
+                //try
+                //{
                 localClient.Headers = CloneHeaders(defaultHeaders);
                 localClient.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
 
-                string search = localClient.UploadString(SearchUrl, string.Format(PostDataTemplate, searchString));
+                search = localClient.UploadString(SearchUrl, string.Format(PostDataTemplate, searchString));
+                //}catch()
 
                 if (!string.IsNullOrEmpty(search))
                 {
@@ -97,50 +143,6 @@ namespace KissAnime
                 else
                     return null;
             }
-        }
-
-        public static List<AnimeDownload> GetDownloads(WebClient client, string url, string name)
-        {
-            List<AnimeDownload> downloads = new List<AnimeDownload>();
-            string episode;
-
-            using (WebClient localClient = GetWebClient())
-            {
-                client.Headers = CloneHeaders(defaultHeaders);
-                episode = client.DownloadString(url);
-
-                // Check if we were detected and attacked by an evil captcha. If we are, we can't continue :(
-                // TODO: Notify user if KissAnime throws a captcha at us
-                if (episode.Contains("AreYouHuman"))
-                    return null;
-            }
-
-            if (!string.IsNullOrEmpty(episode))
-            {
-                CQ episodeQc = new CQ(episode);
-
-                foreach (IDomObject quality in episodeQc["#selectQuality > option"].ToList())
-                {
-                    downloads.Add(new AnimeDownload
-                    {
-                        Title = name,
-                        DownloadLink = Encoding.UTF8.GetString(Convert.FromBase64String(quality.Attributes["value"])),
-                        Resolution = int.Parse(new Regex(@"[0-9]+").Match(quality.InnerText).Value),
-                        SizeRequestReferrer = "http://www.animebam.net/",
-                    });
-                }
-            }
-            return downloads;
-        }
-
-        private static WebHeaderCollection CloneHeaders(WebHeaderCollection headerCollection)
-        {
-            WebHeaderCollection newHeaderCollection = new WebHeaderCollection();
-
-            foreach (string key in headerCollection.AllKeys)
-                newHeaderCollection.Add(key, headerCollection[key]);
-
-            return newHeaderCollection;
         }
     }
 }

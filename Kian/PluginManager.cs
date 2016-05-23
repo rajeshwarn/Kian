@@ -1,11 +1,12 @@
 ﻿using Kian.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 
 namespace Kian
 {
-    internal class PluginManager<T>
+    internal class PluginManager<T> : IDisposable
     {
         private CompositionContainer Container;
 
@@ -29,5 +30,12 @@ namespace Kian
             //Fill the imports of this object
             Container.ComposeParts(this);
         }
+
+        public void Dispose()
+        {
+            Container.Dispose();
+        }
     }
 }
+
+

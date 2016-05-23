@@ -2,6 +2,19 @@
 {
     public class HelperFunctions
     {
+        public static string GetValidFilePath(string filePath)
+        {
+            // Switch to alternate signs
+            filePath = filePath.Replace(":", "꞉"); // MODIFIER LETTER COLON (U+A789)
+            filePath = filePath.Replace("*", "∗"); // ASTERISK OPERATOR (U+2217)
+            filePath = filePath.Replace("?", "﹖"); // SMALL QUESTION MARK (U+FE56)
+
+            foreach (char c in System.IO.Path.GetInvalidPathChars())
+                filePath = filePath.Replace(c, '_');
+
+            return filePath;
+        }
+
         // Credit goes to http://stackoverflow.com/a/11124118.
         // Returns the human-readable file size for an arbitrary, 64-bit file size
         // The default format is "0.# XB", e.g. "4.2 KB" or "1.4 GB"
