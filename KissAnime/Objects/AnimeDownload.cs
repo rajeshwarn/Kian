@@ -11,6 +11,7 @@ namespace KissAnime.Objects
 {
     internal class AnimeDownload : Download, INotifyPropertyChanged, IDisposable
     {
+        private WebClient downloadingClient;
         private string downloadLink;
         private int downloadProgress;
         private Episode episode;
@@ -162,54 +163,58 @@ namespace KissAnime.Objects
             }
         }
 
-        private WebClient downloadingClient;
-
-        private AnimeDownload GetDownload(Episode ep)
+        public void Dispose()
         {
-            List<AnimeDownload> dlList = API.GetDownloads(ep.EpisodeUrl, ep.EpisodeName);
-
-            AnimeDownload maxDl = new AnimeDownload();
-            int maxResolution = 0;
-
-            foreach (AnimeDownload dl in dlList)
+            if (downloadingClient != null)
             {
-                int res = dl.Resolution;
-                if (res > maxResolution)
-                {
-                    maxResolution = res;
-                    maxDl = dl;
-                }
+                downloadingClient.Dispose();
             }
-
-            return maxDl;
         }
 
         public bool Start()
         {
-            AnimeDownload dl = GetDownload(Episode);
+            AnimeDownload dl = new AnimeDownload();
 
-            DownloadLink = dl.DownloadLink;
-            Resolution = dl.Resolution;
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += delegate
+            {
+                dl = GetDownload(Episode);
+            };
 
-            // This is a really shitty solution, but so far it has worked as all files I have encountered so far has been mp4.
-            // There is probably a way better solution to this, but I have time issues as it is :(
-            // I tried to get the file extension by usual means, but sometimes the URL contained a '.' and no file extension,
-            // which resulted in 25+ character long, invalid, file extensions.
-            // TODO: Find the real extension through the first hex-bytes.
-            string extension = ".mp4";
-            
+            bw.RunWorkerCompleted += delegate
+            {
+                if (dl.downloadLink == null)
+                {
+                    Trace.TraceError("Failed to fetch download link for {0}.", Title);
+                    Status = DownloadStatus.Failed;
+                    return;
+                }
 
-            FileName = DownloadManager.GenerateFilePath(this) + extension;
+                DownloadLink = dl.DownloadLink;
+                Resolution = dl.Resolution;
 
-            downloadingClient = new WebClient();
-            downloadingClient.Headers.Add("Referer", "http://www.animebam.net/");
-            downloadingClient.DownloadProgressChanged += DownloadProgressChanged;
-            downloadingClient.DownloadFileCompleted += DownloadFileCompleted;
+                // This is a really shitty solution, but so far it has worked as all files I have encountered so far has been mp4.
+                // There is probably a way better solution to this, but I have time issues as it is :(
+                // I tried to get the file extension by usual means, but sometimes the URL contained a '.' and no file extension,
+                // which resulted in 25+ character long, invalid, file extensions.
+                // TODO: Find the real extension through hex signatures.
+                string extension = ".mp4";
 
-            downloadingClient.DownloadFileAsync(new Uri(DownloadLink), Path.Combine(DownloadManager.DownloadFolder, FileName));
+                FileName = DownloadManager.GenerateFilePath(this) + extension;
 
+                downloadingClient = new WebClient();
+                downloadingClient.Headers.Add("Referer", "http://www.animebam.net/");
+                downloadingClient.DownloadProgressChanged += DownloadProgressChanged;
+                downloadingClient.DownloadFileCompleted += DownloadFileCompleted;
+
+                downloadingClient.DownloadFileAsync(new Uri(dl.DownloadLink), Path.Combine(DownloadManager.DownloadFolder, FileName));
+
+                Trace.TraceInformation("Started downloading {0} ({1})", FileName, Title);
+            };
+
+            bw.RunWorkerAsync();
             Status = DownloadStatus.Downloading;
-            Trace.TraceInformation("Started downloading {0} ({1})", FileName, Title);
+
             return true;
         }
 
@@ -251,19 +256,31 @@ namespace KissAnime.Objects
             }
         }
 
+        private AnimeDownload GetDownload(Episode ep)
+        {
+            List<AnimeDownload> dlList = API.GetDownloads(ep.EpisodeUrl, ep.EpisodeName);
+
+            AnimeDownload maxDl = new AnimeDownload();
+            int maxResolution = 0;
+
+            foreach (AnimeDownload dl in dlList)
+            {
+                int res = dl.Resolution;
+                if (res > maxResolution)
+                {
+                    maxResolution = res;
+                    maxDl = dl;
+                }
+            }
+
+            return maxDl;
+        }
+
         private void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        public void Dispose()
-        {
-            if (downloadingClient != null)
-            {
-                downloadingClient.Dispose();
             }
         }
     }

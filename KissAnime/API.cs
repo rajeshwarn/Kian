@@ -60,20 +60,34 @@ namespace KissAnime
             return newHeaderCollection;
         }
 
-        public static List<AnimeDownload> GetDownloads(string url, string name)
+        public static List<AnimeDownload> GetDownloads(string url, string name, int maxRetries = 3, int currentTry = 0)
         {
             List<AnimeDownload> downloads = new List<AnimeDownload>();
-            string episode;
+            string episode = null;
 
-            using (WebClient localClient = GetWebClient())
+            try
             {
-                localClient.Headers = CloneHeaders(defaultHeaders);
-                episode = localClient.DownloadString(url);
+                using (WebClient localClient = GetWebClient())
+                {
+                    localClient.Headers = CloneHeaders(defaultHeaders);
+                    episode = localClient.DownloadString(url);
 
-                // Check if we were detected and attacked by an evil captcha. If we are, we can't continue :(
-                // TODO: Notify user if KissAnime throws a captcha at us. (Low priority, it hasn't done that since implementing anti-bot-finding things like "it's a bad idea to request 347 different URL's at the same time.")
-                if (episode.Contains("AreYouHuman"))
+                    // Check if we were detected and attacked by an evil captcha. If we are, we can't continue :(
+                    // TODO: Notify user if KissAnime throws a captcha at us. (Low priority, it hasn't done that since implementing anti-bot-finding things like "it's a bad idea to request 347 different URL's at the same time.")
+                    if (episode.Contains("AreYouHuman"))
+                        return null;
+                }
+            }
+            catch (WebException)
+            {
+                if (currentTry < maxRetries)
+                {
+                    GetDownloads(url, name, maxRetries, currentTry);
+                }
+                else
+                {
                     return null;
+                }
             }
 
             if (!string.IsNullOrEmpty(episode))

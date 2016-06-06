@@ -255,16 +255,31 @@ namespace Cloudflare_Evader
 
         protected override WebResponse GetWebResponse(WebRequest request, IAsyncResult result)
         {
-            WebResponse response = base.GetWebResponse(request, result);
-            ReadCookies(response);
-            return response;
+            try
+            {
+                WebResponse response = base.GetWebResponse(request, result);
+                ReadCookies(response);
+                return response;
+            }
+            catch (WebException)
+            {
+                return null;
+            }
         }
 
         protected override WebResponse GetWebResponse(WebRequest request)
         {
-            WebResponse response = base.GetWebResponse(request);
-            ReadCookies(response);
-            return response;
+
+            try
+            {
+                WebResponse response = base.GetWebResponse(request);
+                ReadCookies(response);
+                return response;
+            }
+            catch (WebException)
+            {
+                return null;
+            }
         }
 
         private void ReadCookies(WebResponse r)

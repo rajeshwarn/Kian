@@ -14,7 +14,7 @@
                       Height="576"
                       Width="1024"
                       MinHeight="576"
-                      MinWidth="1024" 
+                      MinWidth="1024"
                       Loaded="windowLoaded"
                       Closed="windowClosed">
 
@@ -62,10 +62,11 @@
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <ListView ItemsSource="{x:Static core:DownloadManager.Downloads}" SelectionMode="Extended" Margin="0,10,0,0" Grid.RowSpan="2">
+                    <ListView ItemsSource="{x:Static core:DownloadManager.Downloads}" SelectionMode="Extended" Margin="0,10,0,0" Grid.RowSpan="2" MouseDoubleClick="downloads_MouseDoubleClick">
                         <ListView.ContextMenu>
                             <ContextMenu>
                                 <ContextMenu.Items>
+                                    <MenuItem Name="openDownload" Header="Open file" Click="openDownload_Click" />
                                     <MenuItem Name="cancelDownload" Header="Cancel" Click="cancelDownload_Click" />
                                     <MenuItem Name="removeDownload" Header="Remove from list" Click="removeDownload_Click" />
                                 </ContextMenu.Items>
